@@ -1,14 +1,22 @@
-struct SDFractal
+﻿struct SDFractal
 {
 	float Iterations;
 	float Bailout;
+	float Power;
+	float Offset;
+	float FoldingScale;
+	float Time;
 
-	float sdByType(float3 pos, float pFractalType, float _Iterations, float _Bailout)
+	float2 sdByType(float3 pos, float pFractalType, float _Time, float _Iterations, float _Bailout, float _Power, float _Offset, float _FoldingScale)
 	{
 		Iterations = _Iterations;
 		Bailout = _Bailout;
+		Power = _Power;
+		Offset = _Offset;
+		FoldingScale = _FoldingScale;
+		Time = _Time;
 
-		float dist = 0;
+		float2 dist = 0;
 		
 		if (pFractalType == 0.0)
 		{
@@ -17,6 +25,14 @@ struct SDFractal
 		else if (pFractalType == 1.0)
 		{
 			dist = sdSerpinski(pos);
+		}
+		else if (pFractalType == 2.0)
+		{
+			dist = sdJulia(pos);
+		}
+		else if (pFractalType == 3.0)
+		{
+			dist = sdJulia2(pos);
 		}
 
 		return dist;
@@ -35,86 +51,370 @@ struct SDFractal
 		{
 			normal = sdSerpinskiNormal(pos);
 		}
+		else if (pFractalType == 2.0)
+		{
+			normal = sdJuliaNormal(pos);	
+		}
+		else if (pFractalType == 3.0)
+		{
+			normal = sdJuliaNormal(pos);	
+		}
 
 		return normal;
 	}
-	
-	float sdMondelbrot(float3 p) {
+
+	float rand(float s, float minV, float maxV) {
+		float r = sin(s*s*27.12345 + 1000.9876 / (s*s + 1e-5));
+		return (r + 1.0) * 0.5 * (maxV - minV) + minV;
+	}
+	float smin(float a, float b, float k) {
+		float h = clamp(0.5 + 0.5*(b-a)/k, 0.0, 1.0 );
+		return lerp(b, a, h) - k*h*(1.0 - h);
+		//return -log(exp(-a/k) + exp(-b/k))*k;
+	}
+
+	//##########################################
+	//
+	//   Orbit functions (coloring))
+	//
+	//##########################################
+	float3 orbitInitZero()
+	{
+		return float3(0.0f, 0.0f, 0.0f);
+	}
+
+	float3 orbitInitInf()
+	{
+		return float3(1e20, 1e20, 1e20);
+	}
+
+	float3 orbitInitNegInf()
+	{
+		return float3(-1e20, -1e20, -1e20);
+	}
+
+	float3 orbitMin(float3 obt, float3 p, float3 s, float3 ogn)
+	{
+		return min(obt, (p.xyz - ogn) * s);
+	}
+
+	float3 orbitMinAbs(float3 obt, float3 p, float3 s, float3 ogn)
+	{
+		return min(obt, abs((p.xyz - ogn) * s));
+	}
+
+	float3 orbitMax(float3 obt, float3 p, float3 s, float3 ogn)
+	{
+		return max(obt, (p.xyz - ogn) * s);
+	}
+
+	float3 orbitMaxAbs(float3 obt, float3 p, float3 s, float3 ogn)
+	{
+		return max(obt, abs((p.xyz - ogn) * s));
+	}
+
+	float3 orbitSum(float3 obt, float3 p, float3 s, float3 ogn)
+	{
+		return obt + (p.xyz - ogn) * s;
+	}
+
+	float3 orbitSumAbs(float3 obt, float3 p, float3 s, float3 ogn)
+	{
+		return obt + abs((p.xyz - ogn) * s);
+	}
+	//##########################################
+	//
+	//   Space folding functions
+	//
+	//##########################################
+	float3 planeFold( float3 z, float3 n, float d) {
+		z.xyz -= 2.0 * min(0.0, dot(z.xyz, n) - d) * n;
+
+		return z;
+	}
+	float3 absFold( float3 z, float3 c) {
+		z.xyz = abs(z.xyz - c) + c;
+
+		return z;
+	}
+	float3 sierpinskiFold( float3 z) {
+		z.xy -= min(z.x + z.y, 0.0);
+		z.xz -= min(z.x + z.z, 0.0);
+		z.yz -= min(z.y + z.z, 0.0);
+
+		return z;
+	}
+	float3 mengerFold( float3 z) {
+		float a = min(z.x - z.y, 0.0);
+		z.x -= a;
+		z.y += a;
+		a = min(z.x - z.z, 0.0);
+		z.x -= a;
+		z.z += a;
+		a = min(z.y - z.z, 0.0);
+		z.y -= a;
+		z.z += a;
+
+		return z;
+	}
+	float3 sphereFold( float3 z, float minR, float maxR) {
+		float r2 = dot(z.xyz, z.xyz);
+		z *= max(maxR / max(minR, r2), 1.0);
+
+		return z;
+	}
+	float3 boxFold( float3 z, float3 r) {
+		z.xyz = clamp(z.xyz, -r, r) * 2.0 - z.xyz;
+
+		return z;
+	}
+	float3 rotXFold( float3 z, float s, float c) {
+		z.yz = float2(c*z.y + s*z.z, c*z.z - s*z.y);
+
+		return z;
+	}
+	float3 rotYFold( float3 z, float s, float c) {
+		z.xz = float2(c*z.x - s*z.z, c*z.z + s*z.x);
+
+		return z;
+	}
+	float3 rotZFold( float3 z, float s, float c) {
+		z.xy = float2(c*z.x + s*z.y, c*z.y - s*z.x);
+
+		return z;
+	}
+	float3 rotXFold( float3 z, float a) {
+		rotXFold(z, sin(a), cos(a));
+
+		return z;
+	}
+	float3 rotYFold( float3 z, float a) {
+		rotYFold(z, sin(a), cos(a));
+
+		return z;
+	}
+	float3 rotZFold( float3 z, float a) {
+		rotZFold(z, sin(a), cos(a));
+
+		return z;
+	}
+
+	float3 scaleTranslateFold(float3 z, float3 s, float3 t)
+	{
+		z.xyz *= s;
+
+		z.xyz += t;
+
+		return z;
+	}
+
+	float3 scaleOriginFold(float3 z, float3 s)
+	{
+		z.xyz *= s;
+
+		return z;
+	}
+
+	//##########################################
+	//
+	//   Primative distance estimators
+	//
+	//##########################################
+	float sdSphere(float3 p, float r) {
+		return (length(p) - r);
+	}
+	float sdBox(float3 p, float3 s) {
+		float3 q = abs(p) - s;
+		return min(max(max(q.y, q.z), q.x), 0.0) + length(max(q, 0.0));
+	}
+	float sdTetrahedron(float3 p, float r) {
+		float md = max(max(-p.x - p.y - p.z, p.x + p.y - p.z),
+					   max(-p.x + p.y + p.z, p.x - p.y + p.z));
+		return (md - r) / (sqrt(3.0));
+	}
+	float sdInfCross(float3 p, float r) {
+		float3 q = p * p;
+		return (sqrt(min(min(q.x + q.y, q.x + q.z), q.y + q.z)) - r);
+	}
+	float deInfCrossXY(float3 p, float r) {
+		float3 q = p * p;
+		return (sqrt(min(q.x, q.y) + q.z) - r);
+	}
+	float sdInfLine(float3 p, float3 n, float r) {
+		return (length(p - n*dot(p, n)) - r);
+	}
+
+	//##########################################
+	//
+	//   Quaternions operations
+	//
+	//##########################################
+	float4 qSqr(float4 a ) // square a quaterion
+	{
+	    return float4( a.x*a.x - a.y*a.y - a.z*a.z - a.w*a.w,
+	                 2.0*a.x*a.y,
+	                 2.0*a.x*a.z,
+	                 2.0*a.x*a.w );
+	}
+	float4 qCube( float4 a )
+	{
+		return a * ( 4.0*a.x*a.x - dot(a,a)*float4(3.0,1.0,1.0,1.0) );
+	}
+
+	float4 qmul(float4 a, float4 b)
+	{
+	    return float4(
+	        a.x * b.x - a.y * b.y - a.z * b.z - a.w * b.w,
+	        a.y * b.x + a.x * b.y + a.z * b.w - a.w * b.z, 
+	        a.z * b.x + a.x * b.z + a.w * b.y - a.y * b.w,
+	        a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y );
+
+	}
+	float4 qconj(float4 a)
+	{
+	    return float4( a.x, -a.yzw );
+	}
+	float qlength2(float4 q)
+	{
+	    return dot(q,q);
+	}
+	float lengthSquared( float4 z ) { return dot(z,z); }
+
+	//##########################################
+
+	float2 sdMondelbrot(float3 p) {
 		float3 z = p;
 		float dr = 1.0;
 		float r = 0.0;
-		//float Power = 1.0f + 7.0f * (sin(pTime / 15.0f) + 1.0f);
-		float Power = 2.0f;
 
-		for (float i = 0; i < Iterations ; i+=1.0f) {
+		float i = 0;
+		float t0 = 1.0;
+
+		for (i = 0; i < Iterations ; i+=1.0f) {
 			r = length(z);
 
 			if (r > Bailout) {
 	            break;
 	        }
-	        
+
 			// convert to polar coordinates
 			float theta = asin( z.z/r );
 			float phi = atan2( z.y,z.x );
-			dr =  pow(r, Power - 1.0) * Power * dr + 1;
+			dr =  pow(r, Power - 1.0f) * Power * dr + Offset;
 
 			// scale and rotate the point
-			float zr = pow(r,Power);
-			theta = theta*Power;
-			phi = phi*Power;
+			float zr = pow(r, Power);
+			theta = theta * Power;
+			phi = phi * Power;
 			
 			// convert back to cartesian coordinates
 			z = zr * float3( cos(theta)*cos(phi), cos(theta)*sin(phi), sin(theta) );
 			z += p;
+
+			t0 = min(t0, zr);
 		}
 
-	    return 0.5 * log(r) * r / dr;
+	    return float2(0.5 * log(r) * r / dr, t0);
 	}
 
 	float3 sdMondelbrotNormal(float3 p) {
-		float2 offset = float2(0.01, 0);
-		return normalize(float3(
-		sdMondelbrot(p + offset.xyy) -  sdMondelbrot(p - offset.xyy),
-		sdMondelbrot(p + offset.yxy) -  sdMondelbrot(p - offset.yxy),
-		sdMondelbrot(p + offset.yyx) -  sdMondelbrot(p - offset.yyx)
-		));
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdMondelbrot(p + k.xyyz*dx).x +
+						 k.yyx * sdMondelbrot(p + k.yyxz*dx).x +
+						 k.yxy * sdMondelbrot(p + k.yxyz*dx).x +
+						 k.xxx * sdMondelbrot(p + k.xxxz*dx).x);
 	}
 
-	float sdSerpinski(float3 z) {
-		float3 a1 = float3(1,1,1);
-		float3 a2 = float3(-1,-1,1);
-		float3 a3 = float3(1,-1,-1);
-		float3 a4 = float3(-1,1,-1);
+	float2 sdJulia(float3 p)
+	{
+		float4 z = float4(p,0.0);
+	    float md2 = 1.0;
+	    float mz2 = dot(z,z);
 
-		a1 *= 30.0;
-		a2 *= 30.0;
-		a3 *= 30.0;
-		a4 *= 30.0;
+	    float4 trap = float4(abs(z.xyz),dot(z,z));
+	    for( int i=0; i < Iterations; i++ )
+	    {
+	        // dz -> 2·z·dz, meaning |dz| -> 2·|z|·|dz|
+	        // Now we take the 2.0 out of the loop and do it at the end with an exp2
+	        md2 *= 4.0 * mz2;
+	        // z  -> z^2 + c
+	        //z = qSqr(z) + Offset;  
+	        z = qSqr(z) + Offset;  
 
-		float3 c;
-		int n = 0;
-		float dist, d;
-		int Iterations = 20;
-		float Scale = 2.0;
-		while (n < Iterations) {
-			 c = a1; dist = length(z-a1);
-		        d = length(z-a2); if (d < dist) { c = a2; dist=d; }
-			 d = length(z-a3); if (d < dist) { c = a3; dist=d; }
-			 d = length(z-a4); if (d < dist) { c = a4; dist=d; }
-			z = Scale*z-c*(Scale-1.0);
-			n++;
+	        trap = min(trap, float4(abs(z.xyz),dot(z,z)) );
+
+	        mz2 = qlength2(z);
+	        if(mz2 > Bailout) break;
+	    }
+
+		return float2(0.25*sqrt(mz2/md2)*log(mz2), length(trap));
+	}
+
+	float3 sdJuliaNormal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdJulia(p + k.xyyz*dx).x +
+						 k.yyx * sdJulia(p + k.yyxz*dx).x +
+						 k.yxy * sdJulia(p + k.yxyz*dx).x +
+						 k.xxx * sdJulia(p + k.xxxz*dx).x);
+	}
+
+	float2 sdJulia2(float3 p)
+	{
+		float4 z = float4( p, 0.2 );
+	
+		float m2 = 0.0;
+		float2  t = float2( 1e10, 1e10 );
+
+		float dz2 = 1.0;
+		for( int i=0; i<Iterations; i++ ) 
+		{
+	        // |dz|² = |3z²|²
+			dz2 *= 9.0*lengthSquared(qSqr(z));
+	        
+			// z = z^3 + c		
+			z = qCube( z ) + Offset;
+			
+	        // stop under divergence		
+	        m2 = dot(z, z);		
+	        if( m2>Bailout ) break;				 
+
+	        // orbit trapping ( |z|² and z_x  )
+			t = min( t, float2( m2, abs(z.x)) );
+
 		}
 
-		return length(z) * pow(Scale, float(-n));
+		// distance estimator: d(z) = 0.5·log|z|·|z|/|dz|   (see https://iquilezles.org/articles/distancefractals)
+		float d = 0.25 * log(m2) * sqrt(m2/dz2 );
+
+		return float2(d, length(t));
+	}
+
+	float3 sdJuliaNormal2(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdJulia2(p + k.xyyz*dx).x +
+						 k.yyx * sdJulia2(p + k.yyxz*dx).x +
+						 k.yxy * sdJulia2(p + k.yxyz*dx).x +
+						 k.xxx * sdJulia2(p + k.xxxz*dx).x);
+	}
+
+	float2 sdSerpinski(float3 p) {
+        return sdBox(p, float3(Offset,Offset,Offset));
 	}
 
 	float3 sdSerpinskiNormal(float3 p) {
-		float2 offset = float2(0.01, 0);
-		return normalize(float3(
-		sdSerpinski(p + offset.xyy) -  sdSerpinski(p - offset.xyy),
-		sdSerpinski(p + offset.yxy) -  sdSerpinski(p - offset.yxy),
-		sdSerpinski(p + offset.yyx) -  sdSerpinski(p - offset.yyx)
-		));
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdSerpinski(p + k.xyyz*dx).x +
+						 k.yyx * sdSerpinski(p + k.yyxz*dx).x +
+						 k.yxy * sdSerpinski(p + k.yxyz*dx).x +
+						 k.xxx * sdSerpinski(p + k.xxxz*dx).x);
 	}
 
 	float opSmoothUnion( float d1, float d2, float k ) 
