@@ -19,11 +19,19 @@ Ycomponent = dot(pCameraVector, pRotMatRow2);
 Zcomponent = dot(pCameraVector, pRotMatRow3);
 pCameraVector = float3(Xcomponent, Ycomponent, Zcomponent);
 
+float td = 0.0f;
+
 for (i = 0; i < pMaxSteps; i++)
 {
-	float2 dist = sdfLibrary.sdByType(pos, pFractalType, pTime, pIterations, pBailout, pPower, pOffset, pFoldingScale);
+	float2 dist = sdfLibrary.sdByType(pos, pFractalType, pTime, pIterations, pBailout, pPower, pOffset, pFoldingScale, 0.0f);
 
-    if(dist.x * pObjectScale < pDisThreshold)
+	td += dist.x;
+
+	if (td > pMaxDist)
+	{
+		break;
+	}
+    else if (dist.x * pObjectScale < pDisThreshold)
     {
         col = float4(1, 0, 0, 1);
     	IterationCount = dist.y * pScale;

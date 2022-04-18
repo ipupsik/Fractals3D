@@ -6,8 +6,9 @@
 	float Offset;
 	float FoldingScale;
 	float Time;
+	float R;
 
-	float2 sdByType(float3 pos, float pFractalType, float _Time, float _Iterations, float _Bailout, float _Power, float _Offset, float _FoldingScale)
+	float2 sdByType(float3 pos, float pFractalType, float _Time, float _Iterations, float _Bailout, float _Power, float _Offset, float _FoldingScale, float _R)
 	{
 		Iterations = _Iterations;
 		Bailout = _Bailout;
@@ -15,6 +16,7 @@
 		Offset = _Offset;
 		FoldingScale = _FoldingScale;
 		Time = _Time;
+		R = _R;
 
 		float2 dist = 0;
 		
@@ -184,33 +186,32 @@
 		return z;
 	}
 	float3 rotXFold( float3 z, float a) {
-		rotXFold(z, sin(a), cos(a));
+		z = rotXFold(z, sin(a), cos(a));
 
 		return z;
 	}
 	float3 rotYFold( float3 z, float a) {
-		rotYFold(z, sin(a), cos(a));
+		z = rotYFold(z, sin(a), cos(a));
 
 		return z;
 	}
 	float3 rotZFold( float3 z, float a) {
-		rotZFold(z, sin(a), cos(a));
+		z = rotZFold(z, sin(a), cos(a));
 
 		return z;
 	}
 
 	float3 scaleTranslateFold(float3 z, float3 s, float3 t)
 	{
-		z.xyz *= s;
-
-		z.xyz += t;
+		z *= s;
+		z += t;
 
 		return z;
 	}
 
 	float3 scaleOriginFold(float3 z, float3 s)
 	{
-		z.xyz *= s;
+		z *= s;
 
 		return z;
 	}
@@ -404,7 +405,17 @@
 	}
 
 	float2 sdSerpinski(float3 p) {
-        return sdBox(p, float3(Offset,Offset,Offset));
+		float3 orbit = orbitInitInf();
+		for (int i = 0; i < Iterations; i++)
+		{
+			p = rotYFold(p, 0.44);
+			p = absFold(p, float3(0.0f, 0.0f, 0.0f));
+			p = mengerFold(p);
+			orbit = orbitMinAbs(orbit, p, float3(0.24,2.28,7.6), float3(0.0f, 0.0f, 0.0f));
+			p = scaleTranslateFold(p, float3(FoldingScale, FoldingScale, FoldingScale), float3(-2,-4.8,0));
+			p = planeFold(p, float3(0, 0, -1), 0);
+		}
+        return float2(sdBox(p, float3(Offset,Offset,Offset)), length(orbit));
 	}
 
 	float3 sdSerpinskiNormal(float3 p) {
