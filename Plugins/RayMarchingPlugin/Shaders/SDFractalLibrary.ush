@@ -1,0 +1,137 @@
+struct SDFractal
+{
+	float Iterations;
+	float Bailout;
+
+	float sdByType(float3 pos, float pFractalType, float _Iterations, float _Bailout)
+	{
+		Iterations = _Iterations;
+		Bailout = _Bailout;
+
+		float dist = 0;
+		
+		if (pFractalType == 0.0)
+		{
+			dist = sdMondelbrot(pos);
+		}
+		else if (pFractalType == 1.0)
+		{
+			dist = sdSerpinski(pos);
+		}
+
+		return dist;
+	}
+
+	
+	float3 sdNormalByType(float3 pos, float pFractalType)
+	{
+		float3 normal = 0;
+
+		if (pFractalType == 0.0)
+		{
+			normal = sdMondelbrotNormal(pos);
+		}
+		else if (pFractalType == 1.0)
+		{
+			normal = sdSerpinskiNormal(pos);
+		}
+
+		return normal;
+	}
+	
+	float sdMondelbrot(float3 p) {
+		float3 z = p;
+		float dr = 1.0;
+		float r = 0.0;
+		//float Power = 1.0f + 7.0f * (sin(pTime / 15.0f) + 1.0f);
+		float Power = 2.0f;
+
+		for (float i = 0; i < Iterations ; i+=1.0f) {
+			r = length(z);
+
+			if (r > Bailout) {
+	            break;
+	        }
+	        
+			// convert to polar coordinates
+			float theta = asin( z.z/r );
+			float phi = atan2( z.y,z.x );
+			dr =  pow(r, Power - 1.0) * Power * dr + 1;
+
+			// scale and rotate the point
+			float zr = pow(r,Power);
+			theta = theta*Power;
+			phi = phi*Power;
+			
+			// convert back to cartesian coordinates
+			z = zr * float3( cos(theta)*cos(phi), cos(theta)*sin(phi), sin(theta) );
+			z += p;
+		}
+
+	    return 0.5 * log(r) * r / dr;
+	}
+
+	float3 sdMondelbrotNormal(float3 p) {
+		float2 offset = float2(0.01, 0);
+		return normalize(float3(
+		sdMondelbrot(p + offset.xyy) -  sdMondelbrot(p - offset.xyy),
+		sdMondelbrot(p + offset.yxy) -  sdMondelbrot(p - offset.yxy),
+		sdMondelbrot(p + offset.yyx) -  sdMondelbrot(p - offset.yyx)
+		));
+	}
+
+	float sdSerpinski(float3 z) {
+		float3 a1 = float3(1,1,1);
+		float3 a2 = float3(-1,-1,1);
+		float3 a3 = float3(1,-1,-1);
+		float3 a4 = float3(-1,1,-1);
+
+		a1 *= 30.0;
+		a2 *= 30.0;
+		a3 *= 30.0;
+		a4 *= 30.0;
+
+		float3 c;
+		int n = 0;
+		float dist, d;
+		int Iterations = 20;
+		float Scale = 2.0;
+		while (n < Iterations) {
+			 c = a1; dist = length(z-a1);
+		        d = length(z-a2); if (d < dist) { c = a2; dist=d; }
+			 d = length(z-a3); if (d < dist) { c = a3; dist=d; }
+			 d = length(z-a4); if (d < dist) { c = a4; dist=d; }
+			z = Scale*z-c*(Scale-1.0);
+			n++;
+		}
+
+		return length(z) * pow(Scale, float(-n));
+	}
+
+	float3 sdSerpinskiNormal(float3 p) {
+		float2 offset = float2(0.01, 0);
+		return normalize(float3(
+		sdSerpinski(p + offset.xyy) -  sdSerpinski(p - offset.xyy),
+		sdSerpinski(p + offset.yxy) -  sdSerpinski(p - offset.yxy),
+		sdSerpinski(p + offset.yyx) -  sdSerpinski(p - offset.yyx)
+		));
+	}
+
+	float opSmoothUnion( float d1, float d2, float k ) 
+	{
+		float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
+		return lerp( d2, d1, h ) - k*h*(1.0-h);
+	}
+	
+	float opSmoothSubtraction( float d1, float d2, float k ) 
+	{
+		float h = clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
+		return lerp( d2, -d1, h ) + k*h*(1.0-h); 
+	}
+	
+	float opSmoothIntersection( float d1, float d2, float k )
+	{
+		float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
+		return lerp( d2, d1, h ) + k*h*(1.0-h); 
+	}
+};

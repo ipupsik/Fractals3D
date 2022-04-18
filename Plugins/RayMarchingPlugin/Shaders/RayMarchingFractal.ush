@@ -1,0 +1,45 @@
+#include  "/PluginShaders/SDFractalLibrary.ush"
+
+//--------------------- common parameters --------------------
+//
+//pGeometryType
+	// 0-sdMondelbrot
+	// 1-sdSerpinski
+//pMaxSteps 
+//pWorldPosition
+//pObjectPosition
+//pCameraPosition
+//pDisThreshold
+//pSceneDepth
+//pCameraVector
+
+//
+
+SDFractal sdfLibrary;
+float4 col = 0;
+float3 pos = pWorldPosition;
+float3 normal = 0;
+
+
+for (int i = 0; i < pMaxSteps; i++)
+{
+	//if(pSceneDepth < length(pos - pCameraPosition)) 
+	//break;
+
+	//rotate sample point
+	float3 samplePos = (pos - pObjectPosition) * pBulbSize;
+
+	double dist = sdfLibrary.sdByType(samplePos, pFractalType, pIterations, pBailout);
+	
+    if(dist < pDisThreshold)
+    {
+        col = float4(1, 0, 0, 1);
+    	normal = sdfLibrary.sdNormalByType(samplePos, pFractalType);
+	
+        break;
+    }
+    pos += pCameraVector * dist;//need
+   
+}
+
+return float4(normal, col.a);
