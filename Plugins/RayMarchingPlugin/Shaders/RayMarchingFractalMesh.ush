@@ -23,7 +23,7 @@ float td = 0.0f;
 
 for (i = 0; i < pMaxSteps; i++)
 {
-	float2 dist = sdfLibrary.sdByType(pos, pFractalType, pTime, pIterations, pBailout, pPower, pOffset, pFoldingScale, 0.0f);
+	float2 dist = sdfLibrary.sdByType(pos, pFractalType, pTime, pIterations, pBailout, pPower, pOffset, pFoldingScale, 0.0f, pCameraVector, pScale);
 
 	td += dist.x;
 

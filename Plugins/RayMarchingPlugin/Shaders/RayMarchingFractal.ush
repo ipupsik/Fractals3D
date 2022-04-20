@@ -25,8 +25,7 @@ float td = 0.0f;
 
 for (i = 0; i < pMaxSteps; i++)
 {
-	float2 dist = sdfLibrary.sdByType(pos, pFractalType, pTime, pIterations, pBailout, pPower, pOffset, pFoldingScale, r);
-	pos += pCameraVector * dist.x;
+	float2 dist = sdfLibrary.sdByType(pos, pFractalType, pTime, pIterations, pBailout, pPower, pOffset, pFoldingScale, r, pCameraVector, pScale);
 
 	td += dist.x;
 
@@ -51,6 +50,8 @@ for (i = 0; i < pMaxSteps; i++)
 	
         break;
     }
+
+		pos += pCameraVector * dist.x;
 }
 
 return float4(normal, col.a);
