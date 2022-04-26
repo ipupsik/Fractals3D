@@ -8,13 +8,19 @@
 	float Time;
 	float R;
 	float Scale;
+	float OrbitType;
 
 	float3 CameraVector;
+	float3 Orbit;
+	float3 OrbitOrigin;
+	float3 FoldAngles;
+	float3 FoldOffset;
 
 	float2 sdByType(float3 pos, float pFractalType, float _Time, 
 	float _Iterations, float _Bailout, float _Power, 
 	float _Offset, float _FoldingScale, float _R,
-	float3 _CameraVector, float _Scale)
+	float3 _CameraVector, float _Scale, float3 _Orbit, float _OrbitType,
+	float3 _OrbitOrigin, float3 _FoldAngles, float3 _FoldOffset)
 	{
 		Iterations = _Iterations;
 		Bailout = _Bailout;
@@ -24,8 +30,13 @@
 		Time = _Time;
 		R = _R;
 		Scale = _Scale;
+		OrbitType = _OrbitType;
 
 		CameraVector = _CameraVector;
+		Orbit = _Orbit;
+		OrbitOrigin = _OrbitOrigin;
+		FoldAngles = _FoldAngles;
+		FoldOffset = _FoldOffset;
 
 		float2 dist = 0;
 		
@@ -52,6 +63,54 @@
 		else if (pFractalType == 5.0)
 		{
 			dist = sdTree(pos);
+		}
+		else if (pFractalType == 6.0)
+		{
+			dist = sdSnowStadium(pos);
+		}
+		else if (pFractalType == 7.0)
+		{
+			dist = sdMausoleum(pos);
+		}
+		else if (pFractalType == 8.0)
+		{
+			dist = sdButterweedHills(pos);
+		}
+		else if (pFractalType == 9.0)
+		{
+			dist = sdMandelBox(pos);
+		}
+		else if (pFractalType == 10.0)
+		{
+			dist = sdTest1(pos);
+		}
+		else if (pFractalType == 11.0)
+		{
+			dist = sdTest2(pos);
+		}
+		else if (pFractalType == 12.0)
+		{
+			dist = sdTest3(pos);
+		}
+		else if (pFractalType == 13.0)
+		{
+			dist = sdTest4(pos);
+		}
+		else if (pFractalType == 14.0)
+		{
+			dist = sdTest5(pos);
+		}
+		else if (pFractalType == 15.0)
+		{
+			dist = sdTest6(pos);
+		}
+		else if (pFractalType == 16.0)
+		{
+			dist = sdTest7(pos);
+		}
+		else if (pFractalType == 17.0)
+		{
+			dist = sdTest8(pos);
 		}
 
 		return dist;
@@ -86,8 +145,86 @@
 		{
 			normal = sdTreeNormal(pos);	
 		}
+		else if (pFractalType == 6.0)
+		{
+			normal = sdSnowStadiumNormal(pos);	
+		}
+		else if (pFractalType == 7.0)
+		{
+			normal = sdMausoleumNormal(pos);	
+		}
+		else if (pFractalType == 8.0)
+		{
+			normal = sdButterweedHillsNormal(pos);
+		}
+		else if (pFractalType == 9.0)
+		{
+			normal = sdMandelBoxNormal(pos);
+		}
+		else if (pFractalType == 10.0)
+		{
+			normal = sdTest1Normal(pos);
+		}
+		else if (pFractalType == 11.0)
+		{
+			normal = sdTest2Normal(pos);
+		}
+		else if (pFractalType == 12.0)
+		{
+			normal = sdTest3Normal(pos);
+		}
+		else if (pFractalType == 13.0)
+		{
+			normal = sdTest4Normal(pos);
+		}
+		else if (pFractalType == 14.0)
+		{
+			normal = sdTest5Normal(pos);
+		}
+		else if (pFractalType == 15.0)
+		{
+			normal = sdTest6Normal(pos);
+		}
+		else if (pFractalType == 16.0)
+		{
+			normal = sdTest7Normal(pos);
+		}
+		else if (pFractalType == 17.0)
+		{
+			normal = sdTest8Normal(pos);
+		}
 
 		return normal;
+	}
+
+	float3 orbitByType(float3 orbit, float4 p)
+	{
+		if (OrbitType == 0.0f)
+		{
+			orbit = orbitMin(orbit, p, Orbit , OrbitOrigin);
+		}
+		else if (OrbitType == 1.0f)
+		{
+			orbit = orbitMinAbs(orbit, p, Orbit , OrbitOrigin);
+		}
+		else if (OrbitType == 2.0f)
+		{
+			orbit = orbitMax(orbit, p, Orbit , OrbitOrigin);
+		}
+		else if (OrbitType == 3.0f)
+		{
+			orbit = orbitMaxAbs(orbit, p, Orbit , OrbitOrigin);
+		}
+		else if (OrbitType == 4.0f)
+		{
+			orbit = orbitSum(orbit, p, Orbit , OrbitOrigin);
+		}
+		else if (OrbitType == 5.0f)
+		{
+			orbit = orbitSumAbs(orbit, p, Orbit , OrbitOrigin);
+		}
+
+		return orbit;
 	}
 
 	float rand(float s, float minV, float maxV) {
@@ -101,10 +238,7 @@
 	}
 
 	//##########################################
-	//
-	//   Orbit functions (coloring))
-	//
-	//##########################################
+	//   Orbit functions
 	float3 orbitInitZero()
 	{
 		return float3(0.0f, 0.0f, 0.0f);
@@ -150,10 +284,8 @@
 		return obt + abs((p.xyz - ogn) * s);
 	}
 	//##########################################
-	//
 	//   Space folding functions
-	//
-	//##########################################
+
 	float4 planeFold( float4 z, float3 n, float d) {
 		z.xyz -= 2.0 * min(0.0, dot(z.xyz, n) - d) * n;
 
@@ -242,13 +374,51 @@
 	}
 
 	//##########################################
-	//
 	//   Primative distance estimators
-	//
-	//##########################################
-	float sdSphere(float4 p, float r) {
-		return (length(p) - r) / p.w;
+
+	float sdCone(float4 p, float2 c, float h )
+	{
+	  // c is the sin/cos of the angle, h is height
+	  // Alternatively pass q instead of (c,h),
+	  // which is the point at the base in 2D
+	  float2 q = h*float2(c.x/c.y,-1.0);
+	    
+	  float2 w = float2( length(p.xz), p.y );
+	  float2 a = w - q*clamp( dot(w,q)/dot(q,q), 0.0, 1.0 );
+	  float2 b = w - q*float2( clamp( w.x/q.x, 0.0, 1.0 ), 1.0 );
+	  float k = sign( q.y );
+	  float d = min(dot( a, a ),dot(b, b));
+	  float s = max( k*(w.x*q.y-w.y*q.x),k*(w.y-q.y)  );
+	  return sqrt(d)*sign(s) / p.w;
 	}
+
+	float sdHexPrism( float4 p, float2 h )
+	{
+	  const float3 k = float3(-0.8660254, 0.5, 0.57735);
+	  p = abs(p);
+	  p.xy -= 2.0*min(dot(k.xy, p.xy), 0.0)*k.xy;
+	  float2 d = float2(
+	       length(p.xy-float2(clamp(p.x,-k.z*h.x,k.z*h.x), h.x))*sign(p.y-h.x),
+	       p.z-h.y );
+	  return (min(max(d.x,d.y),0.0) + length(max(d,0.0))) / p.w;
+	}
+
+	float sdSphere(float4 p, float r) {
+		return (length(p.xyz) - r) / p.w;
+	}
+
+	float sdCapsule( float4 p, float h, float r )
+	{
+	  p.y -= clamp( p.y, 0.0, h );
+	  return (length( p ) - r) / p.w;
+	}
+
+	float sdTorus( float4 p, float2 t )
+	{
+	  float2 q = float2(length(p.xz)-t.x,p.y);
+	  return (length(q)-t.y) / p.w;
+	}
+
 	float sdBox(float4 p, float3 s) {
 		float3 q = abs(p) - s;
 		return (min(max(max(q.y, q.z), q.x), 0.0) + length(max(q, 0.0))) / p.w;
@@ -271,11 +441,9 @@
 	}
 
 	//##########################################
-	//
 	//   Quaternions operations
-	//
-	//##########################################
-	float4 qSqr(float4 a ) // square a quaterion
+
+	float4 qSqr(float4 a )
 	{
 	    return float4( a.x*a.x - a.y*a.y - a.z*a.z - a.w*a.w,
 	                 2.0*a.x*a.y,
@@ -434,11 +602,11 @@
 		float4 new_p = float4(p, 1.0f);
 		for (int i = 0; i < Iterations; i++)
 		{
-			new_p = rotYFold(new_p, 0.44);
+			new_p = rotYFold(new_p, FoldAngles.y /*0.44*/);
 			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
 			new_p = mengerFold(new_p);
-			orbit = orbitMinAbs(orbit, new_p, float3(0.24,2.28,7.6), float3(0.0f, 0.0f, 0.0f));
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * float3(-2,-4.8,0));
+			orbit = orbitByType(orbit, new_p);
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-2,-4.8,0)*/);
 			new_p = planeFold(new_p, float3(0, 0, -1), 0);
 		}
 
@@ -462,7 +630,8 @@
 		for (int i = 0; i < Iterations; i++)
 		{
 			new_p = sierpinskiFold(new_p);
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * float3(-1,-1,-1));
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1,-1,-1)*/);
+			orbit = orbitByType(orbit, new_p);
 		}
 
 		OutputColor = orbit;
@@ -486,8 +655,9 @@
 		{
 			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
 			new_p = mengerFold(new_p);
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * float3(-2,-2,0));
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-2,-2,0)*/);
 			new_p = planeFold(new_p, float3(0, 0, -1), -1);
+			orbit = orbitByType(orbit, new_p);
 		}
 
 		OutputColor = orbit;
@@ -502,6 +672,334 @@
 						 k.yyx * sdMenger(p + k.yyxz*dx).x +
 						 k.yxy * sdMenger(p + k.yxyz*dx).x +
 						 k.xxx * sdMenger(p + k.xxxz*dx).x);
+	}
+
+
+	float2 sdSnowStadium(float3 p) {
+		float3 orbit = orbitInitInf();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = rotYFold(new_p,  FoldAngles.y /*3.33f*/);
+			new_p = sierpinskiFold(new_p);
+			new_p = rotXFold(new_p, FoldAngles.x /*0.15f*/);
+			new_p = mengerFold(new_p);
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-6.61,-4,-2.42)*/);
+			orbit = orbitByType(orbit, new_p);
+		}
+
+		OutputColor = orbit;
+        return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
+	}
+
+	float3 sdSnowStadiumNormal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdSnowStadium(p + k.xyyz*dx).x +
+						 k.yyx * sdSnowStadium(p + k.yyxz*dx).x +
+						 k.yxy * sdSnowStadium(p + k.yxyz*dx).x +
+						 k.xxx * sdSnowStadium(p + k.xxxz*dx).x);
+	}
+
+	float2 sdMausoleum(float3 p) {
+		float3 orbit = orbitInitZero();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = boxFold(new_p, float3(0.34, 0.34, 0.34));
+			new_p = mengerFold(new_p);
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-5.27,-0.34,0.0)*/);
+			new_p = rotXFold(new_p, FoldAngles.x /*3.1415926f / 2.0f*/);
+			orbit = orbitByType(orbit, new_p);
+		}
+
+		OutputColor = orbit;
+        return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
+	}
+
+	float3 sdMausoleumNormal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdMausoleum(p + k.xyyz*dx).x +
+						 k.yyx * sdMausoleum(p + k.yyxz*dx).x +
+						 k.yxy * sdMausoleum(p + k.yxyz*dx).x +
+						 k.xxx * sdMausoleum(p + k.xxxz*dx).x);
+	}
+
+	float2 sdButterweedHills(float3 p) {
+		float3 orbit = orbitInitInf();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.0,-0.5,-0.2)*/);
+			orbit = orbitByType(orbit, new_p);
+			new_p = rotXFold(new_p, FoldAngles.x /*3.61f*/);
+			new_p = rotYFold(new_p, FoldAngles.y /*2.03f*/);
+		}
+
+		OutputColor = orbit;
+        return float2(sdSphere(new_p, Offset), length(new_p));
+	}
+
+	float3 sdButterweedHillsNormal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdButterweedHills(p + k.xyyz*dx).x +
+						 k.yyx * sdButterweedHills(p + k.yyxz*dx).x +
+						 k.yxy * sdButterweedHills(p + k.yxyz*dx).x +
+						 k.xxx * sdButterweedHills(p + k.xxxz*dx).x);
+	}
+
+	float2 sdMandelBox(float3 p) {
+		float3 orbit = orbitInitInf();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = boxFold(new_p, float3(Power, Power, Power));
+			new_p = sphereFold(new_p, 0.5, 1.0f);
+			new_p = scaleTranslateFold(new_p, FoldingScale, FoldOffset /*float3(0.0f, 0.0f, 0.0f)*/);
+			orbit = orbitByType(orbit, new_p);
+		}
+
+		OutputColor = orbit;
+        return float2(sdBox(new_p, Offset), length(new_p));
+	}
+
+	float3 sdMandelBoxNormal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdMandelBox(p + k.xyyz*dx).x +
+						 k.yyx * sdMandelBox(p + k.yyxz*dx).x +
+						 k.yxy * sdMandelBox(p + k.yxyz*dx).x +
+						 k.xxx * sdMandelBox(p + k.xxxz*dx).x);
+	}
+
+	float2 sdTest1(float3 p) {
+		float3 orbit = orbitInitInf();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = boxFold(new_p, float3(Power, Power, Power));
+			new_p = rotXFold(new_p,  FoldAngles.x /*0.56*/);
+			new_p = sphereFold(new_p, 0.5, 1.0f);
+			new_p = scaleTranslateFold(new_p, FoldingScale, FoldOffset /*float3(0.0f, 0.0f, 0.0f)*/);
+			orbit = orbitByType(orbit, new_p);
+			new_p = rotYFold(new_p, FoldAngles.y /*3.31*/);
+		}
+
+		OutputColor = orbit;
+        return float2(sdTetrahedron(new_p, Offset), length(new_p));
+	}
+
+	float3 sdTest1Normal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdTest1(p + k.xyyz*dx).x +
+						 k.yyx * sdTest1(p + k.yyxz*dx).x +
+						 k.yxy * sdTest1(p + k.yxyz*dx).x +
+						 k.xxx * sdTest1(p + k.xxxz*dx).x);
+	}
+
+	float2 sdTest2(float3 p) {
+		float3 orbit = orbitInitInf();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-7.61, -4.0, -2.42)*/);
+			new_p = boxFold(new_p, float3(1.0f, 1.0f, 1.0f));
+			new_p = sierpinskiFold(new_p);
+			new_p = rotXFold(new_p, FoldAngles.x /*0.35*/);
+			orbit = orbitByType(orbit, new_p);
+		}
+
+		OutputColor = orbit;
+        return float2(sdBox(new_p, float3(Offset, Offset, Offset)), length(new_p));
+	}
+
+	float3 sdTest2Normal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdTest2(p + k.xyyz*dx).x +
+						 k.yyx * sdTest2(p + k.yyxz*dx).x +
+						 k.yxy * sdTest2(p + k.yxyz*dx).x +
+						 k.xxx * sdTest2(p + k.xxxz*dx).x);
+	}
+
+	float2 sdTest3(float3 p) {
+		float3 orbit = orbitInitInf();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = sierpinskiFold(new_p);
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-7.61, -4.0, -2.42)*/);
+			new_p = sphereFold(new_p, 0.5, 1.0f);
+			new_p = sierpinskiFold(new_p);
+			new_p = rotXFold(new_p, FoldAngles.x);
+			orbit = orbitByType(orbit, new_p);
+		}
+
+		OutputColor = orbit;
+        return float2(sdSphere(new_p, Offset), length(new_p));
+	}
+
+	float3 sdTest3Normal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdTest3(p + k.xyyz*dx).x +
+						 k.yyx * sdTest3(p + k.yyxz*dx).x +
+						 k.yxy * sdTest3(p + k.yxyz*dx).x +
+						 k.xxx * sdTest3(p + k.xxxz*dx).x);
+	}
+
+	float2 sdTest4(float3 p) {
+		float3 orbit = orbitInitInf();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = sierpinskiFold(new_p);
+			new_p = boxFold(new_p, float3(1.0f, 1.0f, 1.0f));
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.61, -1.0, -1.42)*/);
+			new_p = rotXFold(new_p, FoldAngles.x);
+			orbit = orbitByType(orbit, new_p);
+		}
+
+		OutputColor = orbit;
+        return float2(sdSphere(new_p, Offset), length(new_p));
+	}
+
+	float3 sdTest4Normal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdTest4(p + k.xyyz*dx).x +
+						 k.yyx * sdTest4(p + k.yyxz*dx).x +
+						 k.yxy * sdTest4(p + k.yxyz*dx).x +
+						 k.xxx * sdTest4(p + k.xxxz*dx).x);
+	}
+
+	float2 sdTest5(float3 p)
+	{
+		float3 orbit = orbitInitInf();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = sierpinskiFold(new_p);
+			new_p = rotYFold(new_p, FoldAngles.y);
+			new_p = boxFold(new_p, float3(1.0f, 1.0f, 1.0f));
+			new_p = rotZFold(new_p, FoldAngles.z);
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.81, -1.0, -1.42) */);
+			new_p = rotXFold(new_p, FoldAngles.x);
+			orbit = orbitByType(orbit, new_p);
+		}
+
+		OutputColor = orbit;
+        return float2(sdSphere(new_p, Offset), length(new_p));
+	}
+
+	float3 sdTest5Normal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdTest5(p + k.xyyz*dx).x +
+						 k.yyx * sdTest5(p + k.yyxz*dx).x +
+						 k.yxy * sdTest5(p + k.yxyz*dx).x +
+						 k.xxx * sdTest5(p + k.xxxz*dx).x);
+	}
+
+	float2 sdTest6(float3 p)
+	{
+		float3 orbit = orbitInitInf();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
+			new_p = sierpinskiFold(new_p);
+			new_p = rotXFold(new_p, FoldAngles.x);
+			new_p = rotYFold(new_p, FoldAngles.y);
+			new_p = boxFold(new_p, float3(1.0f, 1.0f, 1.0f));
+			new_p = rotZFold(new_p, FoldAngles.z);
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.81, -1.0, -1.42)*/);
+			orbit = orbitByType(orbit, new_p);
+		}
+
+		OutputColor = orbit;
+        return float2(sdSphere(new_p, Offset), length(new_p));
+	}
+
+	float3 sdTest6Normal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdTest6(p + k.xyyz*dx).x +
+						 k.yyx * sdTest6(p + k.yyxz*dx).x +
+						 k.yxy * sdTest6(p + k.yxyz*dx).x +
+						 k.xxx * sdTest6(p + k.xxxz*dx).x);
+	}
+
+	float2 sdTest8(float3 p)
+	{
+		float3 orbit = orbitInitInf();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = rotYFold(new_p, FoldAngles.y);
+			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
+			new_p = rotXFold(new_p, FoldAngles.x);
+			new_p = sierpinskiFold(new_p);
+			new_p = rotZFold(new_p, FoldAngles.z);
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.81, -1.0, -1.42)*/);
+			orbit = orbitByType(orbit, new_p);
+		}
+
+		OutputColor = orbit;
+        return float2(sdSphere(new_p, Offset), length(new_p));
+	}
+
+	float3 sdTest8Normal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdTest8(p + k.xyyz*dx).x +
+						 k.yyx * sdTest8(p + k.yyxz*dx).x +
+						 k.yxy * sdTest8(p + k.yxyz*dx).x +
+						 k.xxx * sdTest8(p + k.xxxz*dx).x);
+	}
+
+	float2 sdTest7(float3 p)
+	{
+		float3 orbit = orbitInitInf();
+		float4 new_p = float4(p, 1.0f);
+		for (int i = 0; i < Iterations; i++)
+		{
+			new_p = rotYFold(new_p, FoldAngles.y);
+			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
+			new_p = rotXFold(new_p, FoldAngles.x);
+			new_p = sierpinskiFold(new_p);
+			new_p = rotZFold(new_p, FoldAngles.z);
+			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.81, -1.0, -1.42)*/);
+			orbit = orbitByType(orbit, new_p);
+		}
+
+		OutputColor = orbit;
+        return float2(sdSphere(new_p, Offset), length(new_p));
+	}
+
+	float3 sdTest7Normal(float3 p) {
+		float3 k = float3(1,-1,0);
+		float dx = 0.01;
+
+		return normalize(k.xyy * sdTest7(p + k.xyyz*dx).x +
+						 k.yyx * sdTest7(p + k.yyxz*dx).x +
+						 k.yxy * sdTest7(p + k.yxyz*dx).x +
+						 k.xxx * sdTest7(p + k.xxxz*dx).x);
 	}
 
 	float opSmoothUnion( float d1, float d2, float k ) 

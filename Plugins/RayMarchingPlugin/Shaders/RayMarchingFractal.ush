@@ -7,7 +7,7 @@ float3 normal = 0;
 
 float r = length(pos - pObjectPosition);
 
-pos = (pos - pObjectPosition) / r * pScale;
+pos = (pos - pObjectPosition) / pObjectScale * pScale;
 
 int i = 0;
 
@@ -25,7 +25,11 @@ float td = 0.0f;
 
 for (i = 0; i < pMaxSteps; i++)
 {
-	float2 dist = sdfLibrary.sdByType(pos, pFractalType, pTime, pIterations, pBailout, pPower, pOffset, pFoldingScale, r, pCameraVector, pScale);
+	float2 dist = sdfLibrary.sdByType(pos, pFractalType, pTime, 
+	pIterations, pBailout, pPower, 
+	pOffset, pFoldScale, r, 
+	pCameraVector, pScale, pOrbit.xyz, pOrbitType,
+	pOrbitOrigin, pFoldAngles, pFoldOffset);
 
 	td += dist.x;
 
@@ -33,7 +37,7 @@ for (i = 0; i < pMaxSteps; i++)
 	{
 		break;
 	}
-    else if (dist.x * r < pDisThreshold)
+    else if (dist.x * pObjectScale < pDisThreshold)
     {
         col = float4(1, 0, 0, 1);
     	IterationCount = dist.y * pScale;
