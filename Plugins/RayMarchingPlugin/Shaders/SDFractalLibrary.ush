@@ -953,8 +953,8 @@
 			new_p = rotYFold(new_p, FoldAngles.y);
 			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
 			new_p = rotXFold(new_p, FoldAngles.x);
-			new_p = sierpinskiFold(new_p);
 			new_p = rotZFold(new_p, FoldAngles.z);
+			new_p = sierpinskiFold(new_p);
 			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.81, -1.0, -1.42)*/);
 			orbit = orbitByType(orbit, new_p);
 		}

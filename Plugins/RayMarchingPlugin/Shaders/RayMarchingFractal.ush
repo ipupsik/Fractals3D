@@ -21,8 +21,6 @@ Ycomponent = dot(pCameraVector, pRotMatRow2);
 Zcomponent = dot(pCameraVector, pRotMatRow3);
 pCameraVector = float3(Xcomponent, Ycomponent, Zcomponent);
 
-float td = 0.0f;
-
 for (i = 0; i < pMaxSteps; i++)
 {
 	float2 dist = sdfLibrary.sdByType(pos, pFractalType, pTime, 
@@ -31,9 +29,7 @@ for (i = 0; i < pMaxSteps; i++)
 	pCameraVector, pScale, pOrbit.xyz, pOrbitType,
 	pOrbitOrigin, pFoldAngles, pFoldOffset);
 
-	td += dist.x;
-
-	if (td > pMaxDist)
+	if (length(pos) > pMaxDist)
 	{
 		break;
 	}
