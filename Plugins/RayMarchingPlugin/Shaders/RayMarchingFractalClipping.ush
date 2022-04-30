@@ -1,4 +1,4 @@
-#include  "/PluginShaders/SDFractalLibrary.ush"
+#include  "/PluginShaders/SDFractalLibraryClipping.ush"
 
 SDFractal sdfLibrary;
 float4 col = 0;
@@ -19,43 +19,44 @@ Ycomponent = dot(pCameraVector, pRotMatRow2);
 Zcomponent = dot(pCameraVector, pRotMatRow3);
 pCameraVector = float3(Xcomponent, Ycomponent, Zcomponent);
 
+float3 colorMask = float3(1.0, 1.0f, 1.0f);
+
 float t = pMinDist;
+float2 dist = float2(-1.0f, -1.0f);
 
 for (i = 0; i < pMaxSteps; i++)
 {
 	float3 pos = base_pos + pCameraVector * t;
 
-	float2 dist = sdfLibrary.sdByType(pos, pFractalType, pTime, 
+	dist = sdfLibrary.sdByType(pos, pFractalType, pTime, 
 	pIterations, pBailout, pPower, 
-	pOffset, pFoldScale, -1 , 
+	pOffset, pFoldScale, -1, 
 	pCameraVector, pScale, pOrbit.xyz, pOrbitType,
 	pOrbitOrigin, pFoldAngles, pFoldOffset);
 
-
 	if (pEnablePlaneClip == 1.0f)
 	{
-		dist.x = max(dist.x, sdfLibrary.sdBox(float4(pClippingBoxPosition + pos, 1.0), pClippingBoxScale));
-	}    	
+		dist.x = max(dist.x, sdfLibrary.sdBox(float4(p, 1.0), ClippingBox));
+	}    
 
 	t += dist.x;
 
     if (dist.x * pObjectScale < pDisThreshold)
     {
-		pos = base_pos + pCameraVector * t;
-
-        col = float4(1, 0, 0, 1);
-    	IterationCount = dist.y * pScale;
+		col.a = 1.0f;
 
 		if (pUseNormals == 1.0f)
 		{
-    		normal = sdfLibrary.sdNormalByType(pos, pFractalType);
+		    normal = sdfLibrary.sdNormalByType(base_pos + pCameraVector * t, pFractalType);
+
+					colorMask = sdfLibrary.colorSurface(base_pos + pCameraVector * t, normal, dist);
 
 			float NXcomponent = dot(normal, float3(pRotMatRow1.x , pRotMatRow2.x, pRotMatRow3.x));
 			float NYcomponent = dot(normal, float3(pRotMatRow1.y , pRotMatRow2.y, pRotMatRow3.y));
 			float NZcomponent = dot(normal, float3(pRotMatRow1.z , pRotMatRow2.z, pRotMatRow3.z));
 			normal = float3(NXcomponent, NYcomponent, NZcomponent);
 		}
-	
+
         break;
     }
 
@@ -65,4 +66,4 @@ for (i = 0; i < pMaxSteps; i++)
 	}
 }
 
-return float4(normal, col.a);
+return float4(colorMask, col.a);

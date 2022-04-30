@@ -31,6 +31,7 @@
 		R = _R;
 		Scale = _Scale;
 		OrbitType = _OrbitType;
+		seed = 1.0f;
 
 		CameraVector = _CameraVector;
 		Orbit = _Orbit;
@@ -135,7 +136,7 @@
 		}
 		else if (pFractalType == 3.0)
 		{
-			normal = sdJuliaNormal(pos);	
+			normal = sdJuliaNormal2(pos);	
 		}
 		else if (pFractalType == 4.0)
 		{
@@ -476,6 +477,12 @@
 
 	//##########################################
 
+	int   seed;
+	int   PupSik_Rand() { seed = seed*0x343fd+0x269ec3; return (seed>>16)&32767; }
+	float PupSik_Frand() { return float(PupSik_Rand())/32767.0; }
+
+	//##########################################
+
 	float2 sdMondelbrot(float3 p) {
 		float3 z = p;
 		float dr = 1.0;
@@ -507,8 +514,10 @@
 
 			t0 = min(t0, zr);
 		}
+		float d = 0.5 * log(r) * r / dr;
+		OutputColor = colorSurface(float2(d, i)) * Orbit + OrbitOrigin;
 
-	    return float2(0.5 * log(r) * r / dr, t0);
+	    return float2(d, t0);
 	}
 
 	float3 sdMondelbrotNormal(float3 p) {
@@ -526,6 +535,7 @@
 		float4 z = float4(p,0.0);
 	    float md2 = 1.0;
 	    float mz2 = dot(z,z);
+		float n = 0.0f;
 
 	    float4 trap = float4(abs(z.xyz),dot(z,z));
 	    for( int i=0; i < Iterations; i++ )
@@ -535,15 +545,18 @@
 	        md2 *= 4.0 * mz2;
 	        // z  -> z^2 + c
 	        //z = qSqr(z) + Offset;  
-	        z = qSqr(z) + Offset;  
+	        z = qSqr(z) + float4(FoldOffset, FoldOffset.x);  
 
 	        trap = min(trap, float4(abs(z.xyz),dot(z,z)) );
 
 	        mz2 = qlength2(z);
 	        if(mz2 > Bailout) break;
+			n += 1.0f;
 	    }
+		float d = 0.25*sqrt(mz2/md2)*log(mz2);
+		OutputColor = colorSurface(float2(d, n)) * Orbit + OrbitOrigin;
 
-		return float2(0.25*sqrt(mz2/md2)*log(mz2), length(trap));
+		return float2(d, length(trap));
 	}
 
 	float3 sdJuliaNormal(float3 p) {
@@ -556,35 +569,46 @@
 						 k.xxx * sdJulia(p + k.xxxz*dx).x);
 	}
 
+	float3 colorSurface(float2 tn )
+	{
+	    float3 col = 0.5+0.5*cos(log2(tn.y)*0.9+3.5+float3(0.0,0.6,1.0));
+	    float inside = smoothstep(14.0,15.0,tn.y);
+	    col *= float3(0.45,0.42,0.40) + float3(0.55,0.58,0.60)*inside;
+	    col = lerp(col*col*(3.0-2.0*col),col,inside);
+	    col = lerp( lerp(col,float3(1.0, 1.0f, 1.0f) * dot(col,float3(0.3333, 0.3333, 0.3333)),-0.4),
+	                        col, inside);
+	    return clamp(col*0.65,0.0,1.0);
+	}
+
 	float2 sdJulia2(float3 p)
 	{
-		float4 z = float4( p, 0.2 );
-	
-		float m2 = 0.0;
-		float2  t = float2( 1e10, 1e10 );
+		float4  kC = float4(-2,6,15,-6)/22.0;
+	    float4 z = float4( p, 0.0 );
+	    float dz2 = 1.0;
+		float m2  = 0.0;
+	    float n   = 0.0;
 
-		float dz2 = 1.0;
-		for( int i=0; i<Iterations; i++ ) 
+	    for( int i=0; i<Iterations; i++ ) 
 		{
-	        // |dz|² = |3z²|²
+	        // z' = 3z² -> |z'|² = 9|z²|²
 			dz2 *= 9.0*lengthSquared(qSqr(z));
 	        
-			// z = z^3 + c		
-			z = qCube( z ) + Offset;
-			
+	        // z = z³ + c		
+			z = qCube( z ) + float4(FoldOffset, -6.0 / 22.0);
+	        
 	        // stop under divergence		
-	        m2 = dot(z, z);		
+	        m2 = lengthSquared(z);
+	        // exit condition
 	        if( m2>Bailout ) break;				 
-
-	        // orbit trapping ( |z|² and z_x  )
-			t = min( t, float2( m2, abs(z.x)) );
-
+			n += 1.0;
 		}
+	   
+		// sdf(z) = log|z|·|z|/|dz| : https://iquilezles.org/articles/distancefractals
+		float d = 0.25*log(m2)*sqrt(m2/dz2);
 
-		// distance estimator: d(z) = 0.5·log|z|·|z|/|dz|   (see https://iquilezles.org/articles/distancefractals)
-		float d = 0.25 * log(m2) * sqrt(m2/dz2 );
+		OutputColor = colorSurface(float2(d, n)) * Orbit + OrbitOrigin;
 
-		return float2(d, length(t));
+		return float2(d, n);        
 	}
 
 	float3 sdJuliaNormal2(float3 p) {
