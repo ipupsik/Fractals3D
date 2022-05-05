@@ -1,11 +1,4 @@
-﻿interface ILight
-{
-    float3 ComputeAmbient();
-    float3 ComputeDiffuse();
-    float3 ComputeSpecular();
-};
-
-struct SDFractal
+﻿struct SDFractal
 {
 	float Iterations;
 	float Bailout;
@@ -48,78 +41,25 @@ struct SDFractal
 
 		float2 dist = 0;
 		
-		if (pFractalType == 0.0)
-		{
-			dist = sdMondelbrot(pos);
-		}
-		else if (pFractalType == 1.0)
-		{
-			dist = sdSerpinski(pos);
-		}
-		else if (pFractalType == 2.0)
-		{
-			dist = sdJulia(pos);
-		}
-		else if (pFractalType == 3.0)
-		{
-			dist = sdJulia2(pos);
-		}
-		else if (pFractalType == 4.0)
-		{
-			dist = sdMenger(pos);
-		}
-		else if (pFractalType == 5.0)
-		{
-			dist = sdTree(pos);
-		}
-		else if (pFractalType == 6.0)
-		{
-			dist = sdSnowStadium(pos);
-		}
-		else if (pFractalType == 7.0)
-		{
-			dist = sdMausoleum(pos);
-		}
-		else if (pFractalType == 8.0)
-		{
-			dist = sdButterweedHills(pos);
-		}
-		else if (pFractalType == 9.0)
-		{
-			dist = sdMandelBox(pos);
-		}
-		else if (pFractalType == 10.0)
-		{
-			dist = sdTest1(pos);
-		}
-		else if (pFractalType == 11.0)
-		{
-			dist = sdTest2(pos);
-		}
-		else if (pFractalType == 12.0)
-		{
-			dist = sdTest3(pos);
-		}
-		else if (pFractalType == 13.0)
-		{
-			dist = sdTest4(pos);
-		}
-		else if (pFractalType == 14.0)
-		{
-			dist = sdTest5(pos);
-		}
-		else if (pFractalType == 15.0)
-		{
-			dist = sdTest6(pos);
-		}
-		else if (pFractalType == 16.0)
-		{
-			dist = sdTest7(pos);
-		}
-		else if (pFractalType == 17.0)
-		{
-			dist = sdTest8(pos);
-		}
+		if (pFractalType == 0.0) dist = sdMondelbrot(pos);
+		else if (pFractalType == 1.0) dist = sdSerpinski(pos);
+		else if (pFractalType == 2.0) dist = sdJulia(pos);
+		else if (pFractalType == 3.0) dist = sdJulia2(pos);
+		else if (pFractalType == 4.0) dist = sdMenger(pos);
+		else if (pFractalType == 5.0) dist = sdTree(pos);
+		else if (pFractalType == 6.0) dist = sdSnowStadium(pos);
+		else if (pFractalType == 7.0) dist = sdMausoleum(pos);
+		else if (pFractalType == 8.0) dist = sdButterweedHills(pos);
+		else if (pFractalType == 9.0) dist = sdMandelBox(pos);
+		else if (pFractalType == 10.0) dist = sdTest1(pos);
+		else if (pFractalType == 11.0) dist = sdTest2(pos);
+		else if (pFractalType == 12.0) dist = sdTest3(pos);
+		else if (pFractalType == 13.0) dist = sdTest4(pos);
+		else if (pFractalType == 14.0) dist = sdTest5(pos);
+		else if (pFractalType == 15.0) dist = sdTest6(pos);
+		else if (pFractalType == 16.0) dist = sdTest7(pos);
+		else if (pFractalType == 17.0) dist = sdTest8(pos);
+		//---DIST_INSERT---
 
 		return dist;
 	}
@@ -129,108 +69,37 @@ struct SDFractal
 	{
 		float3 normal = 0;
 
-		if (pFractalType == 0.0)
-		{
-			normal = sdMondelbrotNormal(pos);
-		}
-		else if (pFractalType == 1.0)
-		{
-			normal = sdSerpinskiNormal(pos);
-		}
-		else if (pFractalType == 2.0)
-		{
-			normal = sdJuliaNormal(pos);	
-		}
-		else if (pFractalType == 3.0)
-		{
-			normal = sdJuliaNormal2(pos);	
-		}
-		else if (pFractalType == 4.0)
-		{
-			normal = sdMengerNormal(pos);	
-		}
-		else if (pFractalType == 5.0)
-		{
-			normal = sdTreeNormal(pos);	
-		}
-		else if (pFractalType == 6.0)
-		{
-			normal = sdSnowStadiumNormal(pos);	
-		}
-		else if (pFractalType == 7.0)
-		{
-			normal = sdMausoleumNormal(pos);	
-		}
-		else if (pFractalType == 8.0)
-		{
-			normal = sdButterweedHillsNormal(pos);
-		}
-		else if (pFractalType == 9.0)
-		{
-			normal = sdMandelBoxNormal(pos);
-		}
-		else if (pFractalType == 10.0)
-		{
-			normal = sdTest1Normal(pos);
-		}
-		else if (pFractalType == 11.0)
-		{
-			normal = sdTest2Normal(pos);
-		}
-		else if (pFractalType == 12.0)
-		{
-			normal = sdTest3Normal(pos);
-		}
-		else if (pFractalType == 13.0)
-		{
-			normal = sdTest4Normal(pos);
-		}
-		else if (pFractalType == 14.0)
-		{
-			normal = sdTest5Normal(pos);
-		}
-		else if (pFractalType == 15.0)
-		{
-			normal = sdTest6Normal(pos);
-		}
-		else if (pFractalType == 16.0)
-		{
-			normal = sdTest7Normal(pos);
-		}
-		else if (pFractalType == 17.0)
-		{
-			normal = sdTest8Normal(pos);
-		}
+		if (pFractalType == 0.0) normal = sdMondelbrotNormal(pos);
+		else if (pFractalType == 1.0) normal = sdSerpinskiNormal(pos);
+		else if (pFractalType == 2.0) normal = sdJuliaNormal(pos);
+		else if (pFractalType == 3.0) normal = sdJuliaNormal2(pos);	
+		else if (pFractalType == 4.0) normal = sdMengerNormal(pos);
+		else if (pFractalType == 5.0) normal = sdTreeNormal(pos);	
+		else if (pFractalType == 6.0) normal = sdSnowStadiumNormal(pos);	
+		else if (pFractalType == 7.0) normal = sdMausoleumNormal(pos);	
+		else if (pFractalType == 8.0) normal = sdButterweedHillsNormal(pos);
+		else if (pFractalType == 9.0) normal = sdMandelBoxNormal(pos);
+		else if (pFractalType == 10.0) normal = sdTest1Normal(pos);
+		else if (pFractalType == 11.0) normal = sdTest2Normal(pos);
+		else if (pFractalType == 12.0) normal = sdTest3Normal(pos);
+		else if (pFractalType == 13.0) normal = sdTest4Normal(pos);
+		else if (pFractalType == 14.0) normal = sdTest5Normal(pos);
+		else if (pFractalType == 15.0) normal = sdTest6Normal(pos);
+		else if (pFractalType == 16.0) normal = sdTest7Normal(pos);
+		else if (pFractalType == 17.0) normal = sdTest8Normal(pos);
+		//---NORMAL_INSERT---
 
 		return normal;
 	}
 
 	float3 orbitByType(float3 orbit, float4 p)
 	{
-		if (OrbitType == 0.0f)
-		{
-			orbit = orbitMin(orbit, p, Orbit , OrbitOrigin);
-		}
-		else if (OrbitType == 1.0f)
-		{
-			orbit = orbitMinAbs(orbit, p, Orbit , OrbitOrigin);
-		}
-		else if (OrbitType == 2.0f)
-		{
-			orbit = orbitMax(orbit, p, Orbit , OrbitOrigin);
-		}
-		else if (OrbitType == 3.0f)
-		{
-			orbit = orbitMaxAbs(orbit, p, Orbit , OrbitOrigin);
-		}
-		else if (OrbitType == 4.0f)
-		{
-			orbit = orbitSum(orbit, p, Orbit , OrbitOrigin);
-		}
-		else if (OrbitType == 5.0f)
-		{
-			orbit = orbitSumAbs(orbit, p, Orbit , OrbitOrigin);
-		}
+		if (OrbitType == 0.0f) orbit = orbitMin(orbit, p, Orbit , OrbitOrigin);
+		else if (OrbitType == 1.0f) orbit = orbitMinAbs(orbit, p, Orbit , OrbitOrigin);
+		else if (OrbitType == 2.0f) orbit = orbitMax(orbit, p, Orbit , OrbitOrigin);
+		else if (OrbitType == 3.0f) orbit = orbitMaxAbs(orbit, p, Orbit , OrbitOrigin);
+		else if (OrbitType == 4.0f) orbit = orbitSum(orbit, p, Orbit , OrbitOrigin);
+		else if (OrbitType == 5.0f) orbit = orbitSumAbs(orbit, p, Orbit , OrbitOrigin);
 
 		return orbit;
 	}
@@ -440,7 +309,7 @@ struct SDFractal
 		float3 q = p * p;
 		return (sqrt(min(min(q.x + q.y, q.x + q.z), q.y + q.z)) - r) / p.w;
 	}
-	float deInfCrossXY(float4 p, float r) {
+	float sdInfCrossXY(float4 p, float r) {
 		float3 q = p * p;
 		return (sqrt(min(q.x, q.y) + q.z) - r) / p.w;
 	}
@@ -490,6 +359,7 @@ struct SDFractal
 
 	//##########################################
 
+	// --SDF--Mondelbrot--BEGIN--
 	float2 sdMondelbrot(float3 p) {
 		float3 z = p;
 		float dr = 1.0;
@@ -536,7 +406,9 @@ struct SDFractal
 						 k.yxy * sdMondelbrot(p + k.yxyz*dx).x +
 						 k.xxx * sdMondelbrot(p + k.xxxz*dx).x);
 	}
+	// --SDF--Mondelbrot--END--
 
+	// --SDF--Julia--BEGIN--
 	float2 sdJulia(float3 p)
 	{
 		float4 z = float4(p,0.0);
@@ -575,6 +447,7 @@ struct SDFractal
 						 k.yxy * sdJulia(p + k.yxyz*dx).x +
 						 k.xxx * sdJulia(p + k.xxxz*dx).x);
 	}
+	// --SDF--Julia--END--
 
 	float3 colorSurface(float2 tn )
 	{
@@ -587,6 +460,7 @@ struct SDFractal
 	    return clamp(col*0.65,0.0,1.0);
 	}
 
+	// --SDF--Julia2--BEGIN--
 	float2 sdJulia2(float3 p)
 	{
 		float4  kC = float4(-2,6,15,-6)/22.0;
@@ -627,7 +501,9 @@ struct SDFractal
 						 k.yxy * sdJulia2(p + k.yxyz*dx).x +
 						 k.xxx * sdJulia2(p + k.xxxz*dx).x);
 	}
+	// --SDF--Julia2--END--
 
+	// --SDF--Tree--BEGIN--
 	float2 sdTree(float3 p) {
 		float3 orbit = orbitInitInf();
 		float4 new_p = float4(p, 1.0f);
@@ -654,7 +530,9 @@ struct SDFractal
 						 k.yxy * sdTree(p + k.yxyz*dx).x +
 						 k.xxx * sdTree(p + k.xxxz*dx).x);
 	}
+	// --SDF--Tree--END--
 
+	// --SDF--Serpinski--BEGIN--
 	float2 sdSerpinski(float3 p) {
 		float3 orbit = orbitInitInf();
 		float4 new_p = float4(p, 1.0f);
@@ -678,7 +556,9 @@ struct SDFractal
 						 k.yxy * sdSerpinski(p + k.yxyz*dx).x +
 						 k.xxx * sdSerpinski(p + k.xxxz*dx).x);
 	}
+	// --SDF--Serpinski--END--
 
+	// --SDF--Menger--BEGIN--
 	float2 sdMenger(float3 p) {
 		float3 orbit = orbitInitInf();
 		float4 new_p = float4(p, 1.0f);
@@ -704,8 +584,9 @@ struct SDFractal
 						 k.yxy * sdMenger(p + k.yxyz*dx).x +
 						 k.xxx * sdMenger(p + k.xxxz*dx).x);
 	}
+	// --SDF--Menger--END--
 
-
+	// --SDF--SnowStadium--BEGIN--
 	float2 sdSnowStadium(float3 p) {
 		float3 orbit = orbitInitInf();
 		float4 new_p = float4(p, 1.0f);
@@ -732,7 +613,9 @@ struct SDFractal
 						 k.yxy * sdSnowStadium(p + k.yxyz*dx).x +
 						 k.xxx * sdSnowStadium(p + k.xxxz*dx).x);
 	}
+	// --SDF--SnowStadium--END--
 
+	// --SDF--Mausoleum--BEGIN--
 	float2 sdMausoleum(float3 p) {
 		float3 orbit = orbitInitZero();
 		float4 new_p = float4(p, 1.0f);
@@ -758,7 +641,9 @@ struct SDFractal
 						 k.yxy * sdMausoleum(p + k.yxyz*dx).x +
 						 k.xxx * sdMausoleum(p + k.xxxz*dx).x);
 	}
+	// --SDF--Mausoleum--END--
 
+	// --SDF--ButterweedHills--BEGIN--
 	float2 sdButterweedHills(float3 p) {
 		float3 orbit = orbitInitInf();
 		float4 new_p = float4(p, 1.0f);
@@ -784,7 +669,9 @@ struct SDFractal
 						 k.yxy * sdButterweedHills(p + k.yxyz*dx).x +
 						 k.xxx * sdButterweedHills(p + k.xxxz*dx).x);
 	}
+	// --SDF--ButterweedHills--END--
 
+	// --SDF--MandelBox--BEGIN--
 	float2 sdMandelBox(float3 p) {
 		float3 orbit = orbitInitInf();
 		float4 new_p = float4(p, 1.0f);
@@ -809,7 +696,9 @@ struct SDFractal
 						 k.yxy * sdMandelBox(p + k.yxyz*dx).x +
 						 k.xxx * sdMandelBox(p + k.xxxz*dx).x);
 	}
+	// --SDF--MandelBox--END--
 
+	// --SDF--Test1--BEGIN--
 	float2 sdTest1(float3 p) {
 		float3 orbit = orbitInitInf();
 		float4 new_p = float4(p, 1.0f);
@@ -836,7 +725,9 @@ struct SDFractal
 						 k.yxy * sdTest1(p + k.yxyz*dx).x +
 						 k.xxx * sdTest1(p + k.xxxz*dx).x);
 	}
+	// --SDF--Test1--END--
 
+	// --SDF--Test2--BEGIN--
 	float2 sdTest2(float3 p) {
 		float3 orbit = orbitInitInf();
 		float4 new_p = float4(p, 1.0f);
@@ -862,7 +753,9 @@ struct SDFractal
 						 k.yxy * sdTest2(p + k.yxyz*dx).x +
 						 k.xxx * sdTest2(p + k.xxxz*dx).x);
 	}
+	// --SDF--Test2--END--
 
+	// --SDF--Test3--BEGIN--
 	float2 sdTest3(float3 p) {
 		float3 orbit = orbitInitInf();
 		float4 new_p = float4(p, 1.0f);
@@ -889,7 +782,9 @@ struct SDFractal
 						 k.yxy * sdTest3(p + k.yxyz*dx).x +
 						 k.xxx * sdTest3(p + k.xxxz*dx).x);
 	}
+	// --SDF--Test3--END--
 
+	// --SDF--Test4--BEGIN--
 	float2 sdTest4(float3 p) {
 		float3 orbit = orbitInitInf();
 		float4 new_p = float4(p, 1.0f);
@@ -915,7 +810,9 @@ struct SDFractal
 						 k.yxy * sdTest4(p + k.yxyz*dx).x +
 						 k.xxx * sdTest4(p + k.xxxz*dx).x);
 	}
+	// --SDF--Test4--END--
 
+	// --SDF--Test5--BEGIN--
 	float2 sdTest5(float3 p)
 	{
 		float3 orbit = orbitInitInf();
@@ -944,7 +841,9 @@ struct SDFractal
 						 k.yxy * sdTest5(p + k.yxyz*dx).x +
 						 k.xxx * sdTest5(p + k.xxxz*dx).x);
 	}
+	// --SDF--Test5--END--
 
+	// --SDF--Test6--BEGIN--
 	float2 sdTest6(float3 p)
 	{
 		float3 orbit = orbitInitInf();
@@ -974,7 +873,9 @@ struct SDFractal
 						 k.yxy * sdTest6(p + k.yxyz*dx).x +
 						 k.xxx * sdTest6(p + k.xxxz*dx).x);
 	}
+	// --SDF--Test6--END--
 
+	// --SDF--Test8--BEGIN--
 	float2 sdTest8(float3 p)
 	{
 		float3 orbit = orbitInitInf();
@@ -1003,7 +904,9 @@ struct SDFractal
 						 k.yxy * sdTest8(p + k.yxyz*dx).x +
 						 k.xxx * sdTest8(p + k.xxxz*dx).x);
 	}
+	// --SDF--Test8--END--
 
+	// --SDF--Test7--BEGIN--
 	float2 sdTest7(float3 p)
 	{
 		float3 orbit = orbitInitInf();
@@ -1032,6 +935,7 @@ struct SDFractal
 						 k.yxy * sdTest7(p + k.yxyz*dx).x +
 						 k.xxx * sdTest7(p + k.xxxz*dx).x);
 	}
+	// --SDF--Test7--END--
 
 	float3x3 euler_yzx_to_axis_angle(float3 rot)
 	{
