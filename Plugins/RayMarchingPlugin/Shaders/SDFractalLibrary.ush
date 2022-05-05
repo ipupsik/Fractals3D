@@ -1,4 +1,11 @@
-﻿struct SDFractal
+﻿interface ILight
+{
+    float3 ComputeAmbient();
+    float3 ComputeDiffuse();
+    float3 ComputeSpecular();
+};
+
+struct SDFractal
 {
 	float Iterations;
 	float Bailout;
@@ -1024,6 +1031,18 @@
 						 k.yyx * sdTest7(p + k.yyxz*dx).x +
 						 k.yxy * sdTest7(p + k.yxyz*dx).x +
 						 k.xxx * sdTest7(p + k.xxxz*dx).x);
+	}
+
+	float3x3 euler_yzx_to_axis_angle(float3 rot)
+	{
+		float x = rot.x;
+		float y = rot.y;
+		float z = rot.z;
+	    float3 r1 = float3(cos(y) * cos(z), - cos(y) * sin(z), sin(y));
+	    float3 r2 = float3(cos(x) * sin(z) + cos(z) * sin(x) * sin(y), cos(x) * cos(z) - sin(x) * sin(y) * sin(z), -cos(y) * sin(x));
+	    float3 r3 = float3(sin(x) * sin(z) - cos(x) * cos(z) * sin(y), cos(z) * sin(x) + cos(x) * sin(y) * sin(z), cos(x) * cos(y));
+
+		return float3x3(r3, r2, r1);
 	}
 
 	float opSmoothUnion( float d1, float d2, float k ) 

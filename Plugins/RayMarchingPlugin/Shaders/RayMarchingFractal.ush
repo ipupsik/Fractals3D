@@ -21,6 +21,15 @@ pCameraVector = float3(Xcomponent, Ycomponent, Zcomponent);
 
 float t = pMinDist;
 
+pClibbingBoxRotation /= 180.0f;
+pClibbingBoxRotation *= 3.1415926;
+
+float3x3 output = sdfLibrary.euler_yzx_to_axis_angle(pClibbingBoxRotation);
+
+float3 pRotMatClippingBoxRow1 = float3(1.0, 0.0, 0.0);//normalize(output[0]);
+float3 pRotMatClippingBoxRow2 = float3(0.0, 1.0, 0.0);normalize(output[1]);
+float3 pRotMatClippingBoxRow3 = float3(0.0, 0.0, 1.0);normalize(output[2]);
+
 for (i = 0; i < pMaxSteps; i++)
 {
 	float3 pos = base_pos + pCameraVector * t;
@@ -34,6 +43,12 @@ for (i = 0; i < pMaxSteps; i++)
 
 	if (pEnablePlaneClip == 1.0f)
 	{
+		//float clipPos = pos;
+		//float ClipXcomponent = dot(clipPos, pRotMatClippingBoxRow1);
+		//float ClipYcomponent = dot(clipPos, pRotMatClippingBoxRow2);
+		//float ClipZcomponent = dot(clipPos, pRotMatClippingBoxRow3);
+		//clipPos = float3(ClipXcomponent, ClipYcomponent, ClipZcomponent);
+
 		dist.x = max(dist.x, sdfLibrary.sdBox(float4(pClippingBoxPosition + pos, 1.0), pClippingBoxScale));
 	}    	
 
