@@ -1,4 +1,4 @@
-﻿struct SDFractal
+﻿struct SDFractalTest
 {
 	float Iterations;
 	float Bailout;
@@ -16,29 +16,9 @@
 	float3 FoldAngles;
 	float3 FoldOffset;
 
-	float2 sdByType(float3 pos, float pFractalType, float _Time, 
-	float _Iterations, float _Bailout, float _Power, 
-	float _Offset, float _FoldingScale, float _R,
-	float3 _CameraVector, float _Scale, float3 _Orbit, float _OrbitType,
-	float3 _OrbitOrigin, float3 _FoldAngles, float3 _FoldOffset)
+	float2 sdByType(float pFractalType)
 	{
-		Iterations = _Iterations;
-		Bailout = _Bailout;
-		Power = _Power;
-		Offset = _Offset;
-		FoldingScale = _FoldingScale;
-		Time = _Time;
-		R = _R;
-		Scale = _Scale;
-		OrbitType = _OrbitType;
-		seed = 1.0f;
-
-		CameraVector = _CameraVector;
-		Orbit = _Orbit;
-		OrbitOrigin = _OrbitOrigin;
-		FoldAngles = _FoldAngles;
-		FoldOffset = _FoldOffset;
-
+	float pos = 0.0f;
 		float2 dist = 0;
 		
 		if (pFractalType == 0.0) dist = sdMondelbrot(pos);
@@ -100,14 +80,8 @@ else if (pFractalType == 19) 	dist = sdLalala(pos);
 else if (pFractalType == 18) 	dist = sdAHAHA(pos);
 // --DIST--AHAHA--END--
 // --DIST--Abobus--BEGIN--
-else if (pFractalType == 22) 	dist = sdAbobus(pos);
+else if (pFractalType == 18) 	dist = sdAbobus(pos);
 // --DIST--Abobus--END--
-// --DIST--TreeTest--BEGIN--
-else if (pFractalType == 20) 	dist = sdTreeTest(pos);
-// --DIST--TreeTest--END--
-// --DIST--FracPups--BEGIN--
-else if (pFractalType == 21) 	dist = sdFracPups(pos);
-// --DIST--FracPups--END--
 // --DIST-INSERT--
 
 		return dist;
@@ -177,14 +151,8 @@ else if (pFractalType == 19) normal = sdLalalaNormal(pos);
 else if (pFractalType == 18) normal = sdAHAHANormal(pos);
 // --NORMAL--AHAHA--END--
 // --NORMAL--Abobus--BEGIN--
-else if (pFractalType == 22) normal = sdAbobusNormal(pos);
+else if (pFractalType == 18) normal = sdAbobusNormal(pos);
 // --NORMAL--Abobus--END--
-// --NORMAL--TreeTest--BEGIN--
-else if (pFractalType == 20) normal = sdTreeTestNormal(pos);
-// --NORMAL--TreeTest--END--
-// --NORMAL--FracPups--BEGIN--
-else if (pFractalType == 21) normal = sdFracPupsNormal(pos);
-// --NORMAL--FracPups--END--
 // --NORMAL-INSERT--
 
 		return normal;
@@ -1108,53 +1076,6 @@ float3 sdAbobusNormal(float3 p) {
 						 k.xxx * sdAbobus(p + k.xxxz*dx).x);
 }
 // --SDF--Abobus--END--
-// --SDF--TreeTest--BEGIN--
-float2 sdTreeTest (float3 p) { 
-    float3 orbit = orbitInitInf();
-	float4 new_p = float4(p, 1.0f);
-    for (int i = 0; i < Iterations; i++)
-	{new_p = boxFold(new_p, float3(Power, Power, Power));
-new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
-new_p = rotXFold(new_p, FoldAngles.x);
-new_p = rotZFold(new_p, FoldAngles.z);
-orbit = orbitByType(orbit, new_p);
-    }
-
-    OutputColor = orbit;
-    return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
-}
-float3 sdTreeTestNormal(float3 p) {
-       float3 k = float3(1,-1,0);
-		float dx = 0.01;
-        return normalize(k.xyy * sdTreeTest(p + k.xyyz*dx).x +
-						 k.yyx * sdTreeTest(p + k.yyxz*dx).x +
-						 k.yxy * sdTreeTest(p + k.yxyz*dx).x +
-						 k.xxx * sdTreeTest(p + k.xxxz*dx).x);
-}
-// --SDF--TreeTest--END--
-// --SDF--FracPups--BEGIN--
-float2 sdFracPups (float3 p) { 
-    float3 orbit = orbitInitInf();
-	float4 new_p = float4(p, 1.0f);
-    for (int i = 0; i < Iterations; i++)
-	{new_p = planeFold(new_p, float3(0, 0, -1), -1);
-new_p = planeFold(new_p, float3(0, 0, -1), -1);
-new_p = planeFold(new_p, float3(0, 0, -1), -1);
-new_p = planeFold(new_p, float3(0, 0, -1), -1);
-    }
-
-    OutputColor = orbit;
-    return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
-}
-float3 sdFracPupsNormal(float3 p) {
-       float3 k = float3(1,-1,0);
-		float dx = 0.01;
-        return normalize(k.xyy * sdFracPups(p + k.xyyz*dx).x +
-						 k.yyx * sdFracPups(p + k.yyxz*dx).x +
-						 k.yxy * sdFracPups(p + k.yxyz*dx).x +
-						 k.xxx * sdFracPups(p + k.xxxz*dx).x);
-}
-// --SDF--FracPups--END--
 // --FRACTAL-CODE-INSERT--
 
 	float3x3 euler_yzx_to_axis_angle(float3 rot)

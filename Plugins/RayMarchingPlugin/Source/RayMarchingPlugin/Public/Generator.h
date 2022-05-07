@@ -19,6 +19,9 @@ public:
 		void DoSomething();
 
 	UPROPERTY(BlueprintReadWrite)
+		FString Name;
+
+	UPROPERTY(BlueprintReadWrite)
 		FString OutputString;
 
 	UPROPERTY(BlueprintReadWrite)
