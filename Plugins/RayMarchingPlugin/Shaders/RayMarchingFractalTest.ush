@@ -1,11 +1,11 @@
 #include  "/PluginShaders/SDFractalLibraryTest.ush"
 
-SDFractalTest sdfLibraryTest;
+SDFractal sdfLibraryTest;
 float4 col = 0;
 float3 base_pos = pWorldPosition;
 float3 normal = 0;
 
-base_pos = (base_pos - pObjectPosition) ;
+base_pos = (base_pos - pObjectPosition) / pObjectScale * pScale;
 
 int i = 0;
 
@@ -34,7 +34,8 @@ for (i = 0; i < pMaxSteps; i++)
 {
 	float3 pos = base_pos + pCameraVector * t;
 
-	float2 dist = sdfLibraryTest.sdByType(pFractalType);
+	float2 dist = sdfLibraryTest.sdByType(pos, pFractalType, pLoop, 
+	pIterations, pPower, pFoldScale, pFoldScale2,  pScale, pFoldAngles, pFoldAngles2, pFoldOffset, pFoldOffset2, pTime);
 
 
 	//if (pEnablePlaneClip == 1.0f)
@@ -50,12 +51,12 @@ for (i = 0; i < pMaxSteps; i++)
 
 	t += dist.x;
 
-    if (dist.x < pDisThreshold)
+    if (dist.x * pObjectScale < pDisThreshold)
     {
 		pos = base_pos + pCameraVector * t;
 
         col = float4(1, 0, 0, 1);
-    	//IterationCount = dist.y * pScale;
+    	IterationCount = dist.y * pScale;
 
 		//if (pUseNormals == 1.0f)
 		{
@@ -69,11 +70,6 @@ for (i = 0; i < pMaxSteps; i++)
 	
         break;
     }
-
-	//if (t > pMaxDist)
-	{
-		break;
-	}
 }
 
 return float4(normal, col.a);

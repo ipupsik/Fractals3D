@@ -21,24 +21,24 @@ pCameraVector = float3(Xcomponent, Ycomponent, Zcomponent);
 
 float t = pMinDist;
 
-pClibbingBoxRotation /= 180.0f;
-pClibbingBoxRotation *= 3.1415926;
+//pClibbingBoxRotation /= 180.0f;
+//pClibbingBoxRotation *= 3.1415926;
 
-float3x3 output = sdfLibrary.euler_yzx_to_axis_angle(pClibbingBoxRotation);
+//float3x3 output = sdfLibrary.euler_yzx_to_axis_angle(pClibbingBoxRotation);
 
-float3 pRotMatClippingBoxRow1 = float3(1.0, 0.0, 0.0);//normalize(output[0]);
-float3 pRotMatClippingBoxRow2 = float3(0.0, 1.0, 0.0);normalize(output[1]);
-float3 pRotMatClippingBoxRow3 = float3(0.0, 0.0, 1.0);normalize(output[2]);
+//float3 pRotMatClippingBoxRow1 = float3(1.0, 0.0, 0.0);//normalize(output[0]);
+//float3 pRotMatClippingBoxRow2 = float3(0.0, 1.0, 0.0);normalize(output[1]);
+//float3 pRotMatClippingBoxRow3 = float3(0.0, 0.0, 1.0);normalize(output[2]);
 
 for (i = 0; i < pMaxSteps; i++)
 {
 	float3 pos = base_pos + pCameraVector * t;
 
-	float2 dist = sdfLibrary.sdByType(pos, pFractalType, pTime, 
+	float2 dist = sdfLibrary.sdByType(pos, pFractalType,
 	pIterations, pBailout, pPower, 
-	pOffset, pFoldScale, -1 , 
+	pFoldScale, 
 	pCameraVector, pScale, pOrbit.xyz, pOrbitType,
-	pOrbitOrigin, pFoldAngles, pFoldOffset);
+	pOrbitOrigin, pFoldAngles, pFoldOffset, pFoldSize);
 
 
 	if (pEnablePlaneClip == 1.0f)

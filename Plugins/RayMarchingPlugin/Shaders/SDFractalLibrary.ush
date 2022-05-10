@@ -3,10 +3,7 @@
 	float Iterations;
 	float Bailout;
 	float Power;
-	float Offset;
 	float FoldingScale;
-	float Time;
-	float R;
 	float Scale;
 	float OrbitType;
 
@@ -15,20 +12,19 @@
 	float3 OrbitOrigin;
 	float3 FoldAngles;
 	float3 FoldOffset;
+	float3 FoldSize;
 
-	float2 sdByType(float3 pos, float pFractalType, float _Time, 
+	float2 sdByType(float3 pos, float pFractalType,
 	float _Iterations, float _Bailout, float _Power, 
-	float _Offset, float _FoldingScale, float _R,
+	float _FoldingScale,
 	float3 _CameraVector, float _Scale, float3 _Orbit, float _OrbitType,
-	float3 _OrbitOrigin, float3 _FoldAngles, float3 _FoldOffset)
+	float3 _OrbitOrigin, float3 _FoldAngles, float3 _FoldOffset,
+	float3 _FoldSize)
 	{
 		Iterations = _Iterations;
 		Bailout = _Bailout;
 		Power = _Power;
-		Offset = _Offset;
 		FoldingScale = _FoldingScale;
-		Time = _Time;
-		R = _R;
 		Scale = _Scale;
 		OrbitType = _OrbitType;
 		seed = 1.0f;
@@ -38,76 +34,56 @@
 		OrbitOrigin = _OrbitOrigin;
 		FoldAngles = _FoldAngles;
 		FoldOffset = _FoldOffset;
+		FoldSize = _FoldSize;
 
 		float2 dist = 0;
 		
 		if (pFractalType == 0.0) dist = sdMondelbrot(pos);
-		// --DIST--Serpinski--BEGIN--
 		else if (pFractalType == 1.0) dist = sdSerpinski(pos);
-		// --DIST--Serpinski--END--
-		// --DIST--Julia--BEGIN--
 		else if (pFractalType == 2.0) dist = sdJulia(pos);
-		// --DIST--Julia--END--
-		// --DIST--Julia2--BEGIN--
 		else if (pFractalType == 3.0) dist = sdJulia2(pos);
-		// --DIST--Julia2--END--
-		// --DIST--Menger--BEGIN--
-		else if (pFractalType == 4.0) dist = sdMenger(pos);
-		// --DIST--Menger--END--
-		// --DIST--Tree--BEGIN--
-		else if (pFractalType == 5.0) dist = sdTree(pos);
-		// --DIST--Tree--END--
-		// --DIST--SnowStadium--BEGIN--
-		else if (pFractalType == 6.0) dist = sdSnowStadium(pos);
-		// --DIST--SnowStadium--END--
-		// --DIST--Mausoleum--BEGIN--
-		else if (pFractalType == 7.0) dist = sdMausoleum(pos);
-		// --DIST--Mausoleum--END--
-		// --DIST--ButterweedHills--BEGIN--
-		else if (pFractalType == 8.0) dist = sdButterweedHills(pos);
-		// --DIST--ButterweedHills--END--
-		// --DIST--MandelBox--BEGIN--
-		else if (pFractalType == 9.0) dist = sdMandelBox(pos);
-		// --DIST--MandelBox--END--
-		// --DIST--Test1--BEGIN--
-		else if (pFractalType == 10.0) dist = sdTest1(pos);
-		// --DIST--Test1--END--
-		// --DIST--Test2--BEGIN--
-		else if (pFractalType == 11.0) dist = sdTest2(pos);
-		// --DIST--Test2--END--
-		// --DIST--Test3--BEGIN--
-		else if (pFractalType == 12.0) dist = sdTest3(pos);
-		// --DIST--Test3--END--
-		// --DIST--Test4--BEGIN--
-		else if (pFractalType == 13.0) dist = sdTest4(pos);
-		// --DIST--Test4--END--
-		// --DIST--Test5--BEGIN--
-		else if (pFractalType == 14.0) dist = sdTest5(pos);
-		// --DIST--Test5--END--
-		// --DIST--Test6--BEGIN--
-		else if (pFractalType == 15.0) dist = sdTest6(pos);
-		// --DIST--Test6--END--
-		// --DIST--Test7--BEGIN--
-		else if (pFractalType == 16.0) dist = sdTest7(pos);
-		// --DIST--Test7--END--
-		// --DIST--Test8--BEGIN--
-		else if (pFractalType == 17.0) dist = sdTest8(pos);
-		// --DIST--Test8--END--
-// --DIST--Lalala--BEGIN--
-else if (pFractalType == 19) 	dist = sdLalala(pos);
-// --DIST--Lalala--END--
-// --DIST--AHAHA--BEGIN--
-else if (pFractalType == 18) 	dist = sdAHAHA(pos);
-// --DIST--AHAHA--END--
-// --DIST--Abobus--BEGIN--
-else if (pFractalType == 22) 	dist = sdAbobus(pos);
-// --DIST--Abobus--END--
-// --DIST--TreeTest--BEGIN--
-else if (pFractalType == 20) 	dist = sdTreeTest(pos);
-// --DIST--TreeTest--END--
-// --DIST--FracPups--BEGIN--
-else if (pFractalType == 21) 	dist = sdFracPups(pos);
-// --DIST--FracPups--END--
+// --DIST--Menger--BEGIN--
+else if (pFractalType == 4) 	dist = sdMenger(pos);
+// --DIST--Menger--END--
+// --DIST--Tree--BEGIN--
+else if (pFractalType == 5) 	dist = sdTree(pos);
+// --DIST--Tree--END--
+// --DIST--SnowStadium--BEGIN--
+else if (pFractalType == 6) 	dist = sdSnowStadium(pos);
+// --DIST--SnowStadium--END--
+// --DIST--Mausoleum--BEGIN--
+else if (pFractalType == 7) 	dist = sdMausoleum(pos);
+// --DIST--Mausoleum--END--
+// --DIST--ButterweedHills--BEGIN--
+else if (pFractalType == 8) 	dist = sdButterweedHills(pos);
+// --DIST--ButterweedHills--END--
+// --DIST--MandelBox--BEGIN--
+else if (pFractalType == 9) 	dist = sdMandelBox(pos);
+// --DIST--MandelBox--END--
+// --DIST--Test1--BEGIN--
+else if (pFractalType == 10) 	dist = sdTest1(pos);
+// --DIST--Test1--END--
+// --DIST--Test2--BEGIN--
+else if (pFractalType == 11) 	dist = sdTest2(pos);
+// --DIST--Test2--END--
+// --DIST--Test3--BEGIN--
+else if (pFractalType == 12) 	dist = sdTest3(pos);
+// --DIST--Test3--END--
+// --DIST--Test4--BEGIN--
+else if (pFractalType == 13) 	dist = sdTest4(pos);
+// --DIST--Test4--END--
+// --DIST--Test5--BEGIN--
+else if (pFractalType == 14) 	dist = sdTest5(pos);
+// --DIST--Test5--END--
+// --DIST--Test6--BEGIN--
+else if (pFractalType == 15) 	dist = sdTest6(pos);
+// --DIST--Test6--END--
+// --DIST--Test7--BEGIN--
+else if (pFractalType == 16) 	dist = sdTest7(pos);
+// --DIST--Test7--END--
+// --DIST--Test8--BEGIN--
+else if (pFractalType == 17) 	dist = sdTest8(pos);
+// --DIST--Test8--END--
 // --DIST-INSERT--
 
 		return dist;
@@ -119,72 +95,51 @@ else if (pFractalType == 21) 	dist = sdFracPups(pos);
 		float3 normal = 0;
 
 		if (pFractalType == 0.0) normal = sdMondelbrotNormal(pos);
-		// --NORMAL--Serpinski--BEGIN--
 		else if (pFractalType == 1.0) normal = sdSerpinskiNormal(pos);
-		// --NORMAL--Serpinski--END--
-		// --NORMAL--Julia--BEGIN--
 		else if (pFractalType == 2.0) normal = sdJuliaNormal(pos);
-		// --NORMAL--Julia--END--
-		// --NORMAL--Julia2--BEGIN--
 		else if (pFractalType == 3.0) normal = sdJulia2Normal(pos);
-		// --NORMAL--Julia2--END--
-		// --NORMAL--Menger--BEGIN--
-		else if (pFractalType == 4.0) normal = sdMengerNormal(pos);
-		// --NORMAL--Menger--END--
-		// --NORMAL--Tree--BEGIN--
-		else if (pFractalType == 5.0) normal = sdTreeNormal(pos);
-		// --NORMAL--Tree--END--
-		// --NORMAL--SnowStadium--BEGIN--
-		else if (pFractalType == 6.0) normal = sdSnowStadiumNormal(pos);
-		// --NORMAL--SnowStadium--END--
-		// --NORMAL--Mausoleum--BEGIN--
-		else if (pFractalType == 7.0) normal = sdMausoleumNormal(pos);
-		// --NORMAL--Mausoleum--END--
-		// --NORMAL--ButterweedHills--BEGIN--
-		else if (pFractalType == 8.0) normal = sdButterweedHillsNormal(pos);
-		// --NORMAL--ButterweedHills--END--
-		// --NORMAL--MandelBox--BEGIN--
-		else if (pFractalType == 9.0) normal = sdMandelBoxNormal(pos);
-		// --NORMAL--MandelBox--END--
-		// --NORMAL--Test1--BEGIN--
-		else if (pFractalType == 10.0) normal = sdTest1Normal(pos);
-		// --NORMAL--Test1--END--
-		// --NORMAL--Test2--BEGIN--
-		else if (pFractalType == 11.0) normal = sdTest2Normal(pos);
-		// --NORMAL--Test2--END--
-		// --NORMAL--Test3--BEGIN--
-		else if (pFractalType == 12.0) normal = sdTest3Normal(pos);
-		// --NORMAL--Test3--END--
-		// --NORMAL--Test4--BEGIN--
-		else if (pFractalType == 13.0) normal = sdTest4Normal(pos);
-		// --NORMAL--Test4--END--
-		// --NORMAL--Test5--BEGIN--
-		else if (pFractalType == 14.0) normal = sdTest5Normal(pos);
-		// --NORMAL--Test5--END--
-		// --NORMAL--Test6--BEGIN--
-		else if (pFractalType == 15.0) normal = sdTest6Normal(pos);
-		// --NORMAL--Test6--END--
-		// --NORMAL--Test7--BEGIN--
-		else if (pFractalType == 16.0) normal = sdTest7Normal(pos);
-		// --NORMAL--Test7--END--
-		// --NORMAL--Test8--BEGIN--
-		else if (pFractalType == 17.0) normal = sdTest8Normal(pos);
-		// --NORMAL--Test8--END--
-// --NORMAL--Lalala--BEGIN--
-else if (pFractalType == 19) normal = sdLalalaNormal(pos);
-// --NORMAL--Lalala--END--
-// --NORMAL--AHAHA--BEGIN--
-else if (pFractalType == 18) normal = sdAHAHANormal(pos);
-// --NORMAL--AHAHA--END--
-// --NORMAL--Abobus--BEGIN--
-else if (pFractalType == 22) normal = sdAbobusNormal(pos);
-// --NORMAL--Abobus--END--
-// --NORMAL--TreeTest--BEGIN--
-else if (pFractalType == 20) normal = sdTreeTestNormal(pos);
-// --NORMAL--TreeTest--END--
-// --NORMAL--FracPups--BEGIN--
-else if (pFractalType == 21) normal = sdFracPupsNormal(pos);
-// --NORMAL--FracPups--END--
+// --NORMAL--Menger--BEGIN--
+else if (pFractalType == 4) normal = sdMengerNormal(pos);
+// --NORMAL--Menger--END--
+// --NORMAL--Tree--BEGIN--
+else if (pFractalType == 5) normal = sdTreeNormal(pos);
+// --NORMAL--Tree--END--
+// --NORMAL--SnowStadium--BEGIN--
+else if (pFractalType == 6) normal = sdSnowStadiumNormal(pos);
+// --NORMAL--SnowStadium--END--
+// --NORMAL--Mausoleum--BEGIN--
+else if (pFractalType == 7) normal = sdMausoleumNormal(pos);
+// --NORMAL--Mausoleum--END--
+// --NORMAL--ButterweedHills--BEGIN--
+else if (pFractalType == 8) normal = sdButterweedHillsNormal(pos);
+// --NORMAL--ButterweedHills--END--
+// --NORMAL--MandelBox--BEGIN--
+else if (pFractalType == 9) normal = sdMandelBoxNormal(pos);
+// --NORMAL--MandelBox--END--
+// --NORMAL--Test1--BEGIN--
+else if (pFractalType == 10) normal = sdTest1Normal(pos);
+// --NORMAL--Test1--END--
+// --NORMAL--Test2--BEGIN--
+else if (pFractalType == 11) normal = sdTest2Normal(pos);
+// --NORMAL--Test2--END--
+// --NORMAL--Test3--BEGIN--
+else if (pFractalType == 12) normal = sdTest3Normal(pos);
+// --NORMAL--Test3--END--
+// --NORMAL--Test4--BEGIN--
+else if (pFractalType == 13) normal = sdTest4Normal(pos);
+// --NORMAL--Test4--END--
+// --NORMAL--Test5--BEGIN--
+else if (pFractalType == 14) normal = sdTest5Normal(pos);
+// --NORMAL--Test5--END--
+// --NORMAL--Test6--BEGIN--
+else if (pFractalType == 15) normal = sdTest6Normal(pos);
+// --NORMAL--Test6--END--
+// --NORMAL--Test7--BEGIN--
+else if (pFractalType == 16) normal = sdTest7Normal(pos);
+// --NORMAL--Test7--END--
+// --NORMAL--Test8--BEGIN--
+else if (pFractalType == 17) normal = sdTest8Normal(pos);
+// --NORMAL--Test8--END--
 // --NORMAL-INSERT--
 
 		return normal;
@@ -476,7 +431,7 @@ else if (pFractalType == 21) normal = sdFracPupsNormal(pos);
 			// convert to polar coordinates
 			float theta = asin( z.z/r );
 			float phi = atan2( z.y,z.x );
-			dr =  pow(r, Power - 1.0f) * Power * dr + Offset;
+			dr =  pow(r, Power - 1.0f) * Power * dr + FoldOffset.x;
 
 			// scale and rotate the point
 			float zr = pow(r, Power);
@@ -601,34 +556,32 @@ else if (pFractalType == 21) normal = sdFracPupsNormal(pos);
 	}
 	// --SDF--Julia2--END--
 
-	// --SDF--Tree--BEGIN--
-	float2 sdTree(float3 p) {
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = rotYFold(new_p, FoldAngles.y /*0.44*/);
-			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
-			new_p = mengerFold(new_p);
-			orbit = orbitByType(orbit, new_p);
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-2,-4.8,0)*/);
-			new_p = planeFold(new_p, float3(0, 0, -1), 0);
-		}
-
-		OutputColor = orbit;
-        return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(orbit));
-	}
-
-	float3 sdTreeNormal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdTree(p + k.xyyz*dx).x +
-						 k.yyx * sdTree(p + k.yyxz*dx).x +
-						 k.yxy * sdTree(p + k.yxyz*dx).x +
-						 k.xxx * sdTree(p + k.xxxz*dx).x);
-	}
-	// --SDF--Tree--END--
+// --SDF--Tree--BEGIN--
+float2 sdTree (float3 p) { 
+    float3 orbit = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
+    for (int i = 0; i < Iterations; i++)
+	{new_p = rotYFold(new_p, FoldAngles.y);
+new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
+new_p = mengerFold(new_p);
+orbit = orbitByType(orbit, new_p);
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+new_p = planeFold(new_p, float3(0, 0, -1), -1);
+    }
+
+    OutputColor = orbit;
+    return float2(min(d, sdBox(new_p, FoldSize)), length(new_p));
+}
+float3 sdTreeNormal(float3 p) {
+       float3 k = float3(1,-1,0);
+		float dx = 0.01;
+        return normalize(k.xyy * sdTree(p + k.xyyz*dx).x +
+						 k.yyx * sdTree(p + k.yyxz*dx).x +
+						 k.yxy * sdTree(p + k.yxyz*dx).x +
+						 k.xxx * sdTree(p + k.xxxz*dx).x);
+}
+// --SDF--Tree--END--
 
 	// --SDF--Serpinski--BEGIN--
 	float2 sdSerpinski(float3 p) {
@@ -642,7 +595,7 @@ else if (pFractalType == 21) normal = sdFracPupsNormal(pos);
 		}
 
 		OutputColor = orbit;
-        return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
+        return float2(sdBox(new_p, FoldSize), length(new_p));
 	}
 
 	float3 sdSerpinskiNormal(float3 p) {
@@ -656,505 +609,354 @@ else if (pFractalType == 21) normal = sdFracPupsNormal(pos);
 	}
 	// --SDF--Serpinski--END--
 
-	// --SDF--Menger--BEGIN--
-	float2 sdMenger(float3 p) {
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
-			new_p = mengerFold(new_p);
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-2,-2,0)*/);
-			new_p = planeFold(new_p, float3(0, 0, -1), -1);
-			orbit = orbitByType(orbit, new_p);
-		}
-
-		OutputColor = orbit;
-        return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
-	}
-
-	float3 sdMengerNormal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdMenger(p + k.xyyz*dx).x +
-						 k.yyx * sdMenger(p + k.yyxz*dx).x +
-						 k.yxy * sdMenger(p + k.yxyz*dx).x +
-						 k.xxx * sdMenger(p + k.xxxz*dx).x);
-	}
-	// --SDF--Menger--END--
-
-	// --SDF--SnowStadium--BEGIN--
-	float2 sdSnowStadium(float3 p) {
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = rotYFold(new_p,  FoldAngles.y /*3.33f*/);
-			new_p = sierpinskiFold(new_p);
-			new_p = rotXFold(new_p, FoldAngles.x /*0.15f*/);
-			new_p = mengerFold(new_p);
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-6.61,-4,-2.42)*/);
-			orbit = orbitByType(orbit, new_p);
-		}
-
-		OutputColor = orbit;
-        return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
-	}
-
-	float3 sdSnowStadiumNormal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdSnowStadium(p + k.xyyz*dx).x +
-						 k.yyx * sdSnowStadium(p + k.yyxz*dx).x +
-						 k.yxy * sdSnowStadium(p + k.yxyz*dx).x +
-						 k.xxx * sdSnowStadium(p + k.xxxz*dx).x);
-	}
-	// --SDF--SnowStadium--END--
-
-	// --SDF--Mausoleum--BEGIN--
-	float2 sdMausoleum(float3 p) {
-		float3 orbit = orbitInitZero();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = boxFold(new_p, float3(0.34, 0.34, 0.34));
-			new_p = mengerFold(new_p);
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-5.27,-0.34,0.0)*/);
-			new_p = rotXFold(new_p, FoldAngles.x /*3.1415926f / 2.0f*/);
-			orbit = orbitByType(orbit, new_p);
-		}
-
-		OutputColor = orbit;
-        return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
-	}
-
-	float3 sdMausoleumNormal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdMausoleum(p + k.xyyz*dx).x +
-						 k.yyx * sdMausoleum(p + k.yyxz*dx).x +
-						 k.yxy * sdMausoleum(p + k.yxyz*dx).x +
-						 k.xxx * sdMausoleum(p + k.xxxz*dx).x);
-	}
-	// --SDF--Mausoleum--END--
-
-	// --SDF--ButterweedHills--BEGIN--
-	float2 sdButterweedHills(float3 p) {
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.0,-0.5,-0.2)*/);
-			orbit = orbitByType(orbit, new_p);
-			new_p = rotXFold(new_p, FoldAngles.x /*3.61f*/);
-			new_p = rotYFold(new_p, FoldAngles.y /*2.03f*/);
-		}
-
-		OutputColor = orbit;
-        return float2(sdSphere(new_p, Offset), length(new_p));
-	}
-
-	float3 sdButterweedHillsNormal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdButterweedHills(p + k.xyyz*dx).x +
-						 k.yyx * sdButterweedHills(p + k.yyxz*dx).x +
-						 k.yxy * sdButterweedHills(p + k.yxyz*dx).x +
-						 k.xxx * sdButterweedHills(p + k.xxxz*dx).x);
-	}
-	// --SDF--ButterweedHills--END--
-
-	// --SDF--MandelBox--BEGIN--
-	float2 sdMandelBox(float3 p) {
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = boxFold(new_p, float3(Power, Power, Power));
-			new_p = sphereFold(new_p, 0.5, 1.0f);
-			new_p = scaleTranslateFold(new_p, FoldingScale, FoldOffset /*float3(0.0f, 0.0f, 0.0f)*/);
-			orbit = orbitByType(orbit, new_p);
-		}
-
-		OutputColor = orbit;
-        return float2(sdBox(new_p, Offset), length(new_p));
-	}
-
-	float3 sdMandelBoxNormal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdMandelBox(p + k.xyyz*dx).x +
-						 k.yyx * sdMandelBox(p + k.yyxz*dx).x +
-						 k.yxy * sdMandelBox(p + k.yxyz*dx).x +
-						 k.xxx * sdMandelBox(p + k.xxxz*dx).x);
-	}
-	// --SDF--MandelBox--END--
-
-	// --SDF--Test1--BEGIN--
-	float2 sdTest1(float3 p) {
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = boxFold(new_p, float3(Power, Power, Power));
-			new_p = rotXFold(new_p,  FoldAngles.x /*0.56*/);
-			new_p = sphereFold(new_p, 0.5, 1.0f);
-			new_p = scaleTranslateFold(new_p, FoldingScale, FoldOffset /*float3(0.0f, 0.0f, 0.0f)*/);
-			orbit = orbitByType(orbit, new_p);
-			new_p = rotYFold(new_p, FoldAngles.y /*3.31*/);
-		}
-
-		OutputColor = orbit;
-        return float2(sdTetrahedron(new_p, Offset), length(new_p));
-	}
-
-	float3 sdTest1Normal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdTest1(p + k.xyyz*dx).x +
-						 k.yyx * sdTest1(p + k.yyxz*dx).x +
-						 k.yxy * sdTest1(p + k.yxyz*dx).x +
-						 k.xxx * sdTest1(p + k.xxxz*dx).x);
-	}
-	// --SDF--Test1--END--
-
-	// --SDF--Test2--BEGIN--
-	float2 sdTest2(float3 p) {
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-7.61, -4.0, -2.42)*/);
-			new_p = boxFold(new_p, float3(1.0f, 1.0f, 1.0f));
-			new_p = sierpinskiFold(new_p);
-			new_p = rotXFold(new_p, FoldAngles.x /*0.35*/);
-			orbit = orbitByType(orbit, new_p);
-		}
-
-		OutputColor = orbit;
-        return float2(sdBox(new_p, float3(Offset, Offset, Offset)), length(new_p));
-	}
-
-	float3 sdTest2Normal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdTest2(p + k.xyyz*dx).x +
-						 k.yyx * sdTest2(p + k.yyxz*dx).x +
-						 k.yxy * sdTest2(p + k.yxyz*dx).x +
-						 k.xxx * sdTest2(p + k.xxxz*dx).x);
-	}
-	// --SDF--Test2--END--
-
-	// --SDF--Test3--BEGIN--
-	float2 sdTest3(float3 p) {
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = sierpinskiFold(new_p);
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-7.61, -4.0, -2.42)*/);
-			new_p = sphereFold(new_p, 0.5, 1.0f);
-			new_p = sierpinskiFold(new_p);
-			new_p = rotXFold(new_p, FoldAngles.x);
-			orbit = orbitByType(orbit, new_p);
-		}
-
-		OutputColor = orbit;
-        return float2(sdSphere(new_p, Offset), length(new_p));
-	}
-
-	float3 sdTest3Normal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdTest3(p + k.xyyz*dx).x +
-						 k.yyx * sdTest3(p + k.yyxz*dx).x +
-						 k.yxy * sdTest3(p + k.yxyz*dx).x +
-						 k.xxx * sdTest3(p + k.xxxz*dx).x);
-	}
-	// --SDF--Test3--END--
-
-	// --SDF--Test4--BEGIN--
-	float2 sdTest4(float3 p) {
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = sierpinskiFold(new_p);
-			new_p = boxFold(new_p, float3(1.0f, 1.0f, 1.0f));
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.61, -1.0, -1.42)*/);
-			new_p = rotXFold(new_p, FoldAngles.x);
-			orbit = orbitByType(orbit, new_p);
-		}
-
-		OutputColor = orbit;
-        return float2(sdSphere(new_p, Offset), length(new_p));
-	}
-
-	float3 sdTest4Normal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdTest4(p + k.xyyz*dx).x +
-						 k.yyx * sdTest4(p + k.yyxz*dx).x +
-						 k.yxy * sdTest4(p + k.yxyz*dx).x +
-						 k.xxx * sdTest4(p + k.xxxz*dx).x);
-	}
-	// --SDF--Test4--END--
-
-	// --SDF--Test5--BEGIN--
-	float2 sdTest5(float3 p)
-	{
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = sierpinskiFold(new_p);
-			new_p = rotYFold(new_p, FoldAngles.y);
-			new_p = boxFold(new_p, float3(1.0f, 1.0f, 1.0f));
-			new_p = rotZFold(new_p, FoldAngles.z);
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.81, -1.0, -1.42) */);
-			new_p = rotXFold(new_p, FoldAngles.x);
-			orbit = orbitByType(orbit, new_p);
-		}
-
-		OutputColor = orbit;
-        return float2(sdSphere(new_p, Offset), length(new_p));
-	}
-
-	float3 sdTest5Normal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdTest5(p + k.xyyz*dx).x +
-						 k.yyx * sdTest5(p + k.yyxz*dx).x +
-						 k.yxy * sdTest5(p + k.yxyz*dx).x +
-						 k.xxx * sdTest5(p + k.xxxz*dx).x);
-	}
-	// --SDF--Test5--END--
-
-	// --SDF--Test6--BEGIN--
-	float2 sdTest6(float3 p)
-	{
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
-			new_p = sierpinskiFold(new_p);
-			new_p = rotXFold(new_p, FoldAngles.x);
-			new_p = rotYFold(new_p, FoldAngles.y);
-			new_p = boxFold(new_p, float3(1.0f, 1.0f, 1.0f));
-			new_p = rotZFold(new_p, FoldAngles.z);
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.81, -1.0, -1.42)*/);
-			orbit = orbitByType(orbit, new_p);
-		}
-
-		OutputColor = orbit;
-        return float2(sdSphere(new_p, Offset), length(new_p));
-	}
-
-	float3 sdTest6Normal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdTest6(p + k.xyyz*dx).x +
-						 k.yyx * sdTest6(p + k.yyxz*dx).x +
-						 k.yxy * sdTest6(p + k.yxyz*dx).x +
-						 k.xxx * sdTest6(p + k.xxxz*dx).x);
-	}
-	// --SDF--Test6--END--
-
-	// --SDF--Test8--BEGIN--
-	float2 sdTest8(float3 p)
-	{
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = rotYFold(new_p, FoldAngles.y);
-			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
-			new_p = rotXFold(new_p, FoldAngles.x);
-			new_p = rotZFold(new_p, FoldAngles.z);
-			new_p = sierpinskiFold(new_p);
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.81, -1.0, -1.42)*/);
-			orbit = orbitByType(orbit, new_p);
-		}
-
-		OutputColor = orbit;
-        return float2(sdSphere(new_p, Offset), length(new_p));
-	}
-
-	float3 sdTest8Normal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdTest8(p + k.xyyz*dx).x +
-						 k.yyx * sdTest8(p + k.yyxz*dx).x +
-						 k.yxy * sdTest8(p + k.yxyz*dx).x +
-						 k.xxx * sdTest8(p + k.xxxz*dx).x);
-	}
-	// --SDF--Test8--END--
-
-	// --SDF--Test7--BEGIN--
-	float2 sdTest7(float3 p)
-	{
-		float3 orbit = orbitInitInf();
-		float4 new_p = float4(p, 1.0f);
-		for (int i = 0; i < Iterations; i++)
-		{
-			new_p = rotYFold(new_p, FoldAngles.y);
-			new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
-			new_p = rotXFold(new_p, FoldAngles.x);
-			new_p = sierpinskiFold(new_p);
-			new_p = rotZFold(new_p, FoldAngles.z);
-			new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset /*float3(-1.81, -1.0, -1.42)*/);
-			orbit = orbitByType(orbit, new_p);
-		}
-
-		OutputColor = orbit;
-        return float2(sdSphere(new_p, Offset), length(new_p));
-	}
-
-	float3 sdTest7Normal(float3 p) {
-		float3 k = float3(1,-1,0);
-		float dx = 0.01;
-
-		return normalize(k.xyy * sdTest7(p + k.xyyz*dx).x +
-						 k.yyx * sdTest7(p + k.yyxz*dx).x +
-						 k.yxy * sdTest7(p + k.yxyz*dx).x +
-						 k.xxx * sdTest7(p + k.xxxz*dx).x);
-	}
-	// --SDF--Test7--END--
-// --SDF--Lalala--BEGIN--
-float2 sdLalala (float3 p) { 
+// --SDF--Menger--BEGIN--
+float2 sdMenger (float3 p) { 
     float3 orbit = orbitInitInf();
 	float4 new_p = float4(p, 1.0f);
-    for (int i = 0; i < Iterations; i++)
-	{new_p = planeFold(new_p, float3(0, 0, -1), -1);
-new_p = rotXFold(new_p, FoldAngles.x);
-orbit = orbitByType(orbit, new_p);
-new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
-new_p = sierpinskiFold(new_p);
-new_p = boxFold(new_p, float3(Power, Power, Power));
-new_p = sierpinskiFold(new_p);
-    }
-
-    OutputColor = orbit;
-    return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
-}
-float3 sdLalalaNormal(float3 p) {
-       float3 k = float3(1,-1,0);
-		float dx = 0.01;
-        return normalize(k.xyy * sdLalala(p + k.xyyz*dx).x +
-						 k.yyx * sdLalala(p + k.yyxz*dx).x +
-						 k.yxy * sdLalala(p + k.yxyz*dx).x +
-						 k.xxx * sdLalala(p + k.xxxz*dx).x);
-}
-// --SDF--Lalala--END--
-// --SDF--AHAHA--BEGIN--
-float2 sdAHAHA (float3 p) { 
-    float3 orbit = orbitInitInf();
-	float4 new_p = float4(p, 1.0f);
-    for (int i = 0; i < Iterations; i++)
-	{new_p = rotXFold(new_p, FoldAngles.x);
-new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
-new_p = sierpinskiFold(new_p);
-new_p = boxFold(new_p, float3(Power, Power, Power));
-new_p = sierpinskiFold(new_p);
-    }
-
-    OutputColor = orbit;
-    return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
-}
-float3 sdAHAHANormal(float3 p) {
-       float3 k = float3(1,-1,0);
-		float dx = 0.01;
-        return normalize(k.xyy * sdAHAHA(p + k.xyyz*dx).x +
-						 k.yyx * sdAHAHA(p + k.yyxz*dx).x +
-						 k.yxy * sdAHAHA(p + k.yxyz*dx).x +
-						 k.xxx * sdAHAHA(p + k.xxxz*dx).x);
-}
-// --SDF--AHAHA--END--
-// --SDF--Abobus--BEGIN--
-float2 sdAbobus (float3 p) { 
-    float3 orbit = orbitInitInf();
-	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
     for (int i = 0; i < Iterations; i++)
 	{new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
-new_p = boxFold(new_p, float3(Power, Power, Power));
-new_p = rotXFold(new_p, FoldAngles.x);
-new_p = rotYFold(new_p, FoldAngles.y);
+new_p = mengerFold(new_p);
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+new_p = planeFold(new_p, float3(0, 0, -1), -1);
 orbit = orbitByType(orbit, new_p);
     }
 
     OutputColor = orbit;
-    return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
+    return float2(min(d, sdBox(new_p, FoldSize)), length(new_p));
 }
-float3 sdAbobusNormal(float3 p) {
+float3 sdMengerNormal(float3 p) {
        float3 k = float3(1,-1,0);
 		float dx = 0.01;
-        return normalize(k.xyy * sdAbobus(p + k.xyyz*dx).x +
-						 k.yyx * sdAbobus(p + k.yyxz*dx).x +
-						 k.yxy * sdAbobus(p + k.yxyz*dx).x +
-						 k.xxx * sdAbobus(p + k.xxxz*dx).x);
+        return normalize(k.xyy * sdMenger(p + k.xyyz*dx).x +
+						 k.yyx * sdMenger(p + k.yyxz*dx).x +
+						 k.yxy * sdMenger(p + k.yxyz*dx).x +
+						 k.xxx * sdMenger(p + k.xxxz*dx).x);
 }
-// --SDF--Abobus--END--
-// --SDF--TreeTest--BEGIN--
-float2 sdTreeTest (float3 p) { 
+// --SDF--Menger--END--
+
+// --SDF--SnowStadium--BEGIN--
+float2 sdSnowStadium (float3 p) { 
     float3 orbit = orbitInitInf();
 	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
     for (int i = 0; i < Iterations; i++)
-	{new_p = boxFold(new_p, float3(Power, Power, Power));
+	{new_p = rotYFold(new_p, FoldAngles.y);
+new_p = sierpinskiFold(new_p);
+new_p = rotXFold(new_p, FoldAngles.x);
+new_p = mengerFold(new_p);
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+orbit = orbitByType(orbit, new_p);
+    }
+
+    OutputColor = orbit;
+    return float2(min(d, sdBox(new_p, FoldSize)), length(new_p));
+}
+float3 sdSnowStadiumNormal(float3 p) {
+       float3 k = float3(1,-1,0);
+		float dx = 0.01;
+        return normalize(k.xyy * sdSnowStadium(p + k.xyyz*dx).x +
+						 k.yyx * sdSnowStadium(p + k.yyxz*dx).x +
+						 k.yxy * sdSnowStadium(p + k.yxyz*dx).x +
+						 k.xxx * sdSnowStadium(p + k.xxxz*dx).x);
+}
+// --SDF--SnowStadium--END--
+
+// --SDF--Mausoleum--BEGIN--
+float2 sdMausoleum (float3 p) { 
+    float3 orbit = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
+    for (int i = 0; i < Iterations; i++)
+	{new_p = boxFold(new_p, FoldSize);
+new_p = mengerFold(new_p);
 new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
 new_p = rotXFold(new_p, FoldAngles.x);
-new_p = rotZFold(new_p, FoldAngles.z);
 orbit = orbitByType(orbit, new_p);
     }
 
     OutputColor = orbit;
-    return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
+    return float2(min(d, sdBox(new_p, FoldSize)), length(new_p));
 }
-float3 sdTreeTestNormal(float3 p) {
+float3 sdMausoleumNormal(float3 p) {
        float3 k = float3(1,-1,0);
 		float dx = 0.01;
-        return normalize(k.xyy * sdTreeTest(p + k.xyyz*dx).x +
-						 k.yyx * sdTreeTest(p + k.yyxz*dx).x +
-						 k.yxy * sdTreeTest(p + k.yxyz*dx).x +
-						 k.xxx * sdTreeTest(p + k.xxxz*dx).x);
+        return normalize(k.xyy * sdMausoleum(p + k.xyyz*dx).x +
+						 k.yyx * sdMausoleum(p + k.yyxz*dx).x +
+						 k.yxy * sdMausoleum(p + k.yxyz*dx).x +
+						 k.xxx * sdMausoleum(p + k.xxxz*dx).x);
 }
-// --SDF--TreeTest--END--
-// --SDF--FracPups--BEGIN--
-float2 sdFracPups (float3 p) { 
+// --SDF--Mausoleum--END--
+
+// --SDF--ButterweedHills--BEGIN--
+float2 sdButterweedHills (float3 p) { 
     float3 orbit = orbitInitInf();
 	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
     for (int i = 0; i < Iterations; i++)
-	{new_p = planeFold(new_p, float3(0, 0, -1), -1);
-new_p = planeFold(new_p, float3(0, 0, -1), -1);
-new_p = planeFold(new_p, float3(0, 0, -1), -1);
-new_p = planeFold(new_p, float3(0, 0, -1), -1);
+	{new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+orbit = orbitByType(orbit, new_p);
+new_p = rotXFold(new_p, FoldAngles.x);
+new_p = rotYFold(new_p, FoldAngles.y);
     }
 
     OutputColor = orbit;
-    return float2(sdBox(new_p, float3(Offset,Offset,Offset)), length(new_p));
+    return float2(min(d, sdSphere(new_p, FoldSize.x)), length(new_p));
 }
-float3 sdFracPupsNormal(float3 p) {
+float3 sdButterweedHillsNormal(float3 p) {
        float3 k = float3(1,-1,0);
 		float dx = 0.01;
-        return normalize(k.xyy * sdFracPups(p + k.xyyz*dx).x +
-						 k.yyx * sdFracPups(p + k.yyxz*dx).x +
-						 k.yxy * sdFracPups(p + k.yxyz*dx).x +
-						 k.xxx * sdFracPups(p + k.xxxz*dx).x);
+        return normalize(k.xyy * sdButterweedHills(p + k.xyyz*dx).x +
+						 k.yyx * sdButterweedHills(p + k.yyxz*dx).x +
+						 k.yxy * sdButterweedHills(p + k.yxyz*dx).x +
+						 k.xxx * sdButterweedHills(p + k.xxxz*dx).x);
 }
-// --SDF--FracPups--END--
+// --SDF--ButterweedHills--END--
+
+// --SDF--MandelBox--BEGIN--
+float2 sdMandelBox (float3 p) { 
+    float3 orbit = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
+    for (int i = 0; i < Iterations; i++)
+	{new_p = boxFold(new_p, FoldSize);
+new_p = sphereFold(new_p, 0.5, 1.0f);
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+orbit = orbitByType(orbit, new_p);
+    }
+
+    OutputColor = orbit;
+    return float2(min(d, sdBox(new_p, FoldSize)), length(new_p));
+}
+float3 sdMandelBoxNormal(float3 p) {
+       float3 k = float3(1,-1,0);
+		float dx = 0.01;
+        return normalize(k.xyy * sdMandelBox(p + k.xyyz*dx).x +
+						 k.yyx * sdMandelBox(p + k.yyxz*dx).x +
+						 k.yxy * sdMandelBox(p + k.yxyz*dx).x +
+						 k.xxx * sdMandelBox(p + k.xxxz*dx).x);
+}
+// --SDF--MandelBox--END--
+
+// --SDF--Test1--BEGIN--
+float2 sdTest1 (float3 p) { 
+    float3 orbit = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
+    for (int i = 0; i < Iterations; i++)
+	{new_p = boxFold(new_p, FoldSize);
+new_p = rotXFold(new_p, FoldAngles.x);
+new_p = sphereFold(new_p, 0.5, 1.0f);
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+orbit = orbitByType(orbit, new_p);
+new_p = rotYFold(new_p, FoldAngles.y);
+    }
+
+    OutputColor = orbit;
+    return float2(min(d, sdTetrahedron(new_p, FoldSize.x)), length(new_p));
+}
+float3 sdTest1Normal(float3 p) {
+       float3 k = float3(1,-1,0);
+		float dx = 0.01;
+        return normalize(k.xyy * sdTest1(p + k.xyyz*dx).x +
+						 k.yyx * sdTest1(p + k.yyxz*dx).x +
+						 k.yxy * sdTest1(p + k.yxyz*dx).x +
+						 k.xxx * sdTest1(p + k.xxxz*dx).x);
+}
+// --SDF--Test1--END--
+
+// --SDF--Test2--BEGIN--
+float2 sdTest2 (float3 p) { 
+    float3 orbit = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
+    for (int i = 0; i < Iterations; i++)
+	{new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+new_p = boxFold(new_p, FoldSize);
+new_p = sierpinskiFold(new_p);
+new_p = rotXFold(new_p, FoldAngles.x);
+orbit = orbitByType(orbit, new_p);
+    }
+
+    OutputColor = orbit;
+    return float2(min(d, sdBox(new_p, FoldSize)), length(new_p));
+}
+float3 sdTest2Normal(float3 p) {
+       float3 k = float3(1,-1,0);
+		float dx = 0.01;
+        return normalize(k.xyy * sdTest2(p + k.xyyz*dx).x +
+						 k.yyx * sdTest2(p + k.yyxz*dx).x +
+						 k.yxy * sdTest2(p + k.yxyz*dx).x +
+						 k.xxx * sdTest2(p + k.xxxz*dx).x);
+}
+// --SDF--Test2--END--
+
+// --SDF--Test3--BEGIN--
+float2 sdTest3 (float3 p) { 
+    float3 orbit = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
+    for (int i = 0; i < Iterations; i++)
+	{new_p = sierpinskiFold(new_p);
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+new_p = sphereFold(new_p, 0.5, 1.0f);
+new_p = sierpinskiFold(new_p);
+new_p = rotXFold(new_p, FoldAngles.x);
+orbit = orbitByType(orbit, new_p);
+    }
+
+    OutputColor = orbit;
+    return float2(min(d, sdSphere(new_p, FoldSize.x)), length(new_p));
+}
+float3 sdTest3Normal(float3 p) {
+       float3 k = float3(1,-1,0);
+		float dx = 0.01;
+        return normalize(k.xyy * sdTest3(p + k.xyyz*dx).x +
+						 k.yyx * sdTest3(p + k.yyxz*dx).x +
+						 k.yxy * sdTest3(p + k.yxyz*dx).x +
+						 k.xxx * sdTest3(p + k.xxxz*dx).x);
+}
+// --SDF--Test3--END--
+
+// --SDF--Test4--BEGIN--
+float2 sdTest4 (float3 p) { 
+    float3 orbit = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
+    for (int i = 0; i < Iterations; i++)
+	{new_p = sierpinskiFold(new_p);
+new_p = boxFold(new_p, FoldSize);
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+new_p = rotXFold(new_p, FoldAngles.x);
+orbit = orbitByType(orbit, new_p);
+    }
+
+    OutputColor = orbit;
+    return float2(min(d, sdSphere(new_p, FoldSize.x)), length(new_p));
+}
+float3 sdTest4Normal(float3 p) {
+       float3 k = float3(1,-1,0);
+		float dx = 0.01;
+        return normalize(k.xyy * sdTest4(p + k.xyyz*dx).x +
+						 k.yyx * sdTest4(p + k.yyxz*dx).x +
+						 k.yxy * sdTest4(p + k.yxyz*dx).x +
+						 k.xxx * sdTest4(p + k.xxxz*dx).x);
+}
+// --SDF--Test4--END--
+
+// --SDF--Test5--BEGIN--
+float2 sdTest5 (float3 p) { 
+    float3 orbit = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
+    for (int i = 0; i < Iterations; i++)
+	{new_p = sierpinskiFold(new_p);
+new_p = rotYFold(new_p, FoldAngles.y);
+new_p = boxFold(new_p, FoldSize);
+new_p = rotZFold(new_p, FoldAngles.z);
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+new_p = rotXFold(new_p, FoldAngles.x);
+orbit = orbitByType(orbit, new_p);
+    }
+
+    OutputColor = orbit;
+    return float2(min(d, sdSphere(new_p, FoldSize.x)), length(new_p));
+}
+float3 sdTest5Normal(float3 p) {
+       float3 k = float3(1,-1,0);
+		float dx = 0.01;
+        return normalize(k.xyy * sdTest5(p + k.xyyz*dx).x +
+						 k.yyx * sdTest5(p + k.yyxz*dx).x +
+						 k.yxy * sdTest5(p + k.yxyz*dx).x +
+						 k.xxx * sdTest5(p + k.xxxz*dx).x);
+}
+// --SDF--Test5--END--
+
+// --SDF--Test6--BEGIN--
+float2 sdTest6 (float3 p) { 
+    float3 orbit = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
+    for (int i = 0; i < Iterations; i++)
+	{new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
+new_p = sierpinskiFold(new_p);
+new_p = rotXFold(new_p, FoldAngles.x);
+new_p = rotYFold(new_p, FoldAngles.y);
+new_p = boxFold(new_p, FoldSize);
+new_p = rotZFold(new_p, FoldAngles.z);
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+orbit = orbitByType(orbit, new_p);
+    }
+
+    OutputColor = orbit;
+    return float2(min(d, sdSphere(new_p, FoldSize.x)), length(new_p));
+}
+float3 sdTest6Normal(float3 p) {
+       float3 k = float3(1,-1,0);
+		float dx = 0.01;
+        return normalize(k.xyy * sdTest6(p + k.xyyz*dx).x +
+						 k.yyx * sdTest6(p + k.yyxz*dx).x +
+						 k.yxy * sdTest6(p + k.yxyz*dx).x +
+						 k.xxx * sdTest6(p + k.xxxz*dx).x);
+}
+// --SDF--Test6--END--
+
+// --SDF--Test8--BEGIN--
+float2 sdTest8 (float3 p) { 
+    float3 orbit = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
+    for (int i = 0; i < Iterations; i++)
+	{new_p = rotYFold(new_p, FoldAngles.y);
+new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
+new_p = rotXFold(new_p, FoldAngles.x);
+new_p = rotZFold(new_p, FoldAngles.z);
+new_p = sierpinskiFold(new_p);
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+orbit = orbitByType(orbit, new_p);
+    }
+
+    OutputColor = orbit;
+    return float2(min(d, sdSphere(new_p, FoldSize.x)), length(new_p));
+}
+float3 sdTest8Normal(float3 p) {
+       float3 k = float3(1,-1,0);
+		float dx = 0.01;
+        return normalize(k.xyy * sdTest8(p + k.xyyz*dx).x +
+						 k.yyx * sdTest8(p + k.yyxz*dx).x +
+						 k.yxy * sdTest8(p + k.yxyz*dx).x +
+						 k.xxx * sdTest8(p + k.xxxz*dx).x);
+}
+// --SDF--Test8--END--
+
+// --SDF--Test7--BEGIN--
+float2 sdTest7 (float3 p) { 
+    float3 orbit = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+    float d = 1e20;
+    for (int i = 0; i < Iterations; i++)
+	{new_p = rotYFold(new_p, FoldAngles.y);
+new_p = absFold(new_p, float3(0.0f, 0.0f, 0.0f));
+new_p = rotXFold(new_p, FoldAngles.x);
+new_p = sierpinskiFold(new_p);
+new_p = rotZFold(new_p, FoldAngles.z);
+new_p = scaleTranslateFold(new_p, FoldingScale, Power * FoldOffset);
+orbit = orbitByType(orbit, new_p);
+    }
+
+    OutputColor = orbit;
+    return float2(min(d, sdSphere(new_p, FoldSize.x)), length(new_p));
+}
+float3 sdTest7Normal(float3 p) {
+       float3 k = float3(1,-1,0);
+		float dx = 0.01;
+        return normalize(k.xyy * sdTest7(p + k.xyyz*dx).x +
+						 k.yyx * sdTest7(p + k.yyxz*dx).x +
+						 k.yxy * sdTest7(p + k.yxyz*dx).x +
+						 k.xxx * sdTest7(p + k.xxxz*dx).x);
+}
+// --SDF--Test7--END--
 // --FRACTAL-CODE-INSERT--
 
 	float3x3 euler_yzx_to_axis_angle(float3 rot)
