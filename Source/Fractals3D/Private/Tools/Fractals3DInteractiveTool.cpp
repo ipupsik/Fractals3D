@@ -6,6 +6,7 @@
 #include "ToolBuilderUtil.h"
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include "BaseBehaviors/ClickDragBehavior.h"
 #include "SourceControlHelpers.h"
 
@@ -24,11 +25,6 @@ UInteractiveTool* UFractals3DInteractiveToolBuilder::BuildTool(const FToolBuilde
 	return NewTool;
 }
 
-
-// JAH TODO: update comments
-/*
- * Tool
- */
 
 UFractals3DInteractiveToolProperties::UFractals3DInteractiveToolProperties()
 {
@@ -168,10 +164,9 @@ void UFractals3DInteractiveTool::GenerateFractal() {
 	FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
 	FString GeneratedShadersDir = FPaths::Combine(PluginShaderDir, TEXT("GeneratedSDF"));
 	FString CurrentShaderDir = FPaths::Combine(GeneratedShadersDir, Properties->FractalName);
-	if (FPaths::DirectoryExists(CurrentShaderDir))
-	{
-		// Remove old shaders, keep material
-	}
+
+	std::filesystem::remove_all(std::filesystem::path(*CurrentShaderDir));
+	std::filesystem::create_directory(std::filesystem::path(*CurrentShaderDir));
 
 	// Fill MainShader
 	FString MainShaderFilename = Properties->FractalName;
