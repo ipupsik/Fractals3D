@@ -1,6 +1,3 @@
-#include  "/PluginShaders/SDFractalLibrary.ush"
-
-SDFractal sdfLibrary;
 float4 col = 0;
 float3 base_pos = pWorldPosition;
 float3 normal = 0;
@@ -21,21 +18,20 @@ pCameraVector = float3(Xcomponent, Ycomponent, Zcomponent);
 
 float t = pMinDist;
 
+sdfLibrary.initialize(pIterations, pBailout, pPower, 
+pFoldScale, 
+pCameraVector, pScale, pOrbit.xyz, pOrbitType,
+pOrbitOrigin, pFoldAngles, pFoldOffset, pFoldSize, pOffset);
+
+float3 unusedOutputColor = float3(0, 0, 0);
+
+SDF sdf;
+
 for (i = 0; i < pMaxSteps; i++)
 {
 	float3 pos = base_pos + pCameraVector * t;
 
-	float2 dist = sdfLibrary.sdByType(pos, pFractalType,
-	pIterations, pBailout, pPower, 
-	pFoldScale, 
-	pCameraVector, pScale, pOrbit.xyz, pOrbitType,
-	pOrbitOrigin, pFoldAngles, pFoldOffset, pFoldSize, pOffset, OutputColor);
-
-
-	if (pEnablePlaneClip == 1.0f)
-	{
-		dist.x = max(dist.x, sdfLibrary.sdBox(float4(pClippingBoxPosition + pos, 1.0), pClippingBoxScale));
-	}    	
+	float2 dist = sdf.sdf(pos, OutputColor);
 
 	t += dist.x;
 
@@ -48,7 +44,14 @@ for (i = 0; i < pMaxSteps; i++)
 
 		if (pUseNormals == 1.0f)
 		{
-    		normal = sdfLibrary.sdNormalByType(pos, pFractalType);
+			float3 k = float3(1,-1,0);
+
+			float dx = 0.01; float3 unusedOutputColor = float3(0, 0, 0);
+
+			normal = normalize(k.xyy * sdf.sdf(pos + (k.xyyz*dx).xyz, unusedOutputColor).x +
+							 k.yyx * sdf.sdf(pos + (k.yyxz*dx).xyz, unusedOutputColor).x +
+							 k.yxy * sdf.sdf(pos + (k.yxyz*dx).xyz, unusedOutputColor).x +
+							 k.xxx * sdf.sdf(pos + (k.xxxz*dx).xyz, unusedOutputColor).x);
 
 			float NXcomponent = dot(normal, float3(pRotMatRow1.x , pRotMatRow2.x, pRotMatRow3.x));
 			float NYcomponent = dot(normal, float3(pRotMatRow1.y , pRotMatRow2.y, pRotMatRow3.y));
