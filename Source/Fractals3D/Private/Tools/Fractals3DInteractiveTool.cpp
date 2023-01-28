@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <string>
 #include "BaseBehaviors/ClickDragBehavior.h"
 #include "SourceControlHelpers.h"
 
@@ -218,10 +219,9 @@ void UFractals3DInteractiveTool::GenerateFractal() {
 		"}\n";
 
 	std::ofstream foutMainShader(*FPaths::Combine(CurrentShaderDir, MainShaderFilename));
-	foutMainShader << *MainShader;
-
+	foutMainShader << std::string(TCHAR_TO_ANSI(* MainShader));
 	std::ofstream foutSdfShader(*FPaths::Combine(CurrentShaderDir, SdfShaderFilename));
-	foutSdfShader << *SdfShader;
+	foutSdfShader << std::string(TCHAR_TO_ANSI(* SdfShader));
 }
 
 
