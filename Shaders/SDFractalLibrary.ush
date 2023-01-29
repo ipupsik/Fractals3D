@@ -1,4 +1,9 @@
-﻿#define rxyz(a, b, c) mul(rz(c), mul(ry(b), rx(a)))
+﻿#define sr(x) sin(radians(x))
+#define c(x) cos(radians(x))
+#define rx(a) float3x3(1, 0, 0, 0, c(a), sr(a), 0, -sr(a), c(a))
+#define ry(a) float3x3(c(a), 0, -sr(a), 0, 1, 0, sr(a), 0, c(a))
+#define rz(a) float3x3(c(a), sr(a), 0, -sr(a), c(a), 0, 0, 0, 1)
+#define rxyz(a, b, c) mul(rz(c), mul(ry(b), rx(a)))
 
 struct SDFractal
 {
@@ -18,6 +23,13 @@ struct SDFractal
 	float TwistZP;
 	float Helix;
 	float BlackHole;
+
+	float3 CameraVector;
+	float3 Orbit;
+	float3 OrbitOrigin;
+	float3 FoldAngles;
+	float3 FoldOffset;
+	float3 FoldSize;
 
 	void initialize(float _Iterations, float _Bailout, float _Power, 
 	float _FoldingScale,

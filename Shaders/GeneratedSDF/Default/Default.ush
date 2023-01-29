@@ -1,0 +1,9 @@
+#include "/PluginShaders/SDFractalLibraryNew.ush"
+
+SDFractal sdfLibrary;
+
+struct SDF {
+#include "/PluginShaders/GeneratedSDF/DefaultSDF.ush"
+};
+
+#include "/PluginShaders/RayMarchingFractalNew.ush"

@@ -38,6 +38,7 @@ public class Fractals3D : ModuleRules
 				"Engine",
                 "Projects",
                 "RenderCore",
+                "ToolWidgets",
                 "Slate",
 				"SlateCore",
 				"InputCore",

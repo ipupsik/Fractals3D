@@ -19,9 +19,11 @@ pCameraVector = float3(Xcomponent, Ycomponent, Zcomponent);
 float t = pMinDist;
 
 sdfLibrary.initialize(pIterations, pBailout, pPower, 
-pFoldScale, 
-pCameraVector, pScale, pOrbit.xyz, pOrbitType,
-pOrbitOrigin, pFoldAngles, pFoldOffset, pFoldSize, pOffset);
+	pFoldingScale,
+	pCameraVector, pScale, pOrbit, pOrbitType,
+	pOrbitOrigin, pFoldAngles, pFoldOffset,
+	pFoldSize, pOffset, pTime, pLoop, pTwistXP, pTwistYP, pTwistZP,
+	pHelix, pBlackHole);
 
 float3 unusedOutputColor = float3(0, 0, 0);
 

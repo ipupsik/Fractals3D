@@ -1,0 +1,10 @@
+float2 sdf(float3 p, out float3 outputColor) {
+	outputColor = orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+	float d = 1e20;
+	for (int i = 0; i < Iterations; i++) {
+
+	}
+
+	return float2(min(d, boxFold(new_p, FoldSize)), length(new_p));
+}
