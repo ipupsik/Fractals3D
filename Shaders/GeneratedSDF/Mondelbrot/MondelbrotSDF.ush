@@ -1,3 +1,0 @@
-float2 sdf(float3 p, out float3 outputColor) {
-	return float2(1, 1);
-}

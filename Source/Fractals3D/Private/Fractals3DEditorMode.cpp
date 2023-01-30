@@ -21,7 +21,7 @@
 
 const FEditorModeID UFractals3DEditorMode::EM_Fractals3DEditorModeId = TEXT("EM_Fractals3DEditorMode");
 
-FString UFractals3DEditorMode::InteractiveToolName = TEXT("Fractals3D_MeasureDistanceTool");
+FString UFractals3DEditorMode::InteractiveToolName = TEXT("Fractals3D_GenerateFractalTool");
 
 
 UFractals3DEditorMode::UFractals3DEditorMode()

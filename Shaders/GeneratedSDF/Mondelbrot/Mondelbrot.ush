@@ -1,9 +1,0 @@
-#include  "/PluginShaders/SDFractalLibrary.ush"
-
-SDFractal sdfLibrary;
-
-struct SDF {
-#include "/PluginShaders/GeneratedSDF/Mondelbrot/MondelbrotSDF.ush"
-};
-
-#include  "/PluginShaders/RayMarchingFractal.ush"

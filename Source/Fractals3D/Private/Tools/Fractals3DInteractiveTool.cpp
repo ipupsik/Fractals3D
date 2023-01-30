@@ -3,7 +3,11 @@
 #include "Fractals3DInteractiveTool.h"
 #include "InteractiveToolManager.h"
 #include "Interfaces/IPluginManager.h"
+#include "Fractals3DEditorModeCommands.h"
 #include "ToolBuilderUtil.h"
+#include "Serialization/JsonSerializer.h"
+#include "JsonObjectConverter.h"
+#include "Misc/FileHelper.h"
 #include <iostream>
 #include <fstream>
 #include <filesystem>
@@ -39,40 +43,38 @@ void UFractals3DInteractiveTool::Setup()
 {
 	UInteractiveTool::Setup();
 
+	const_cast<FFractals3DEditorModeCommands&>(FFractals3DEditorModeCommands::Get()).SetFractalTool(this);
+
 	// Create the property set and register it with the Tool
 	Properties = NewObject<UFractals3DInteractiveToolProperties>(this, "Measurement");
 	AddToolPropertySource(Properties);
-}
 
+	Properties->WatchProperty(Properties->FractalName,
+		[this](FString FractalName) {
+			FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
+			FString GeneratedShadersDir = FPaths::Combine(PluginShaderDir, TEXT("GeneratedSDF"));
+			FString CurrentShaderDir = FPaths::Combine(GeneratedShadersDir, Properties->FractalName);
 
-void UFractals3DInteractiveTool::OnUpdateModifierState(int ModifierID, bool bIsOn)
-{
+			if (std::filesystem::exists(std::filesystem::path(TCHAR_TO_ANSI(*CurrentShaderDir)))) {
+				FString FileData = "";
+				FJsonFractalProperties FractalJSON;
+				FFileHelper::LoadFileToString(FileData, *FPaths::Combine(CurrentShaderDir, "Conf.json"));
+
+				if (FJsonObjectConverter::JsonObjectStringToUStruct(FileData, &FractalJSON, 0, 0))
+				{
+					Properties->FractalConfig = FractalJSON.FractalConfig;
+					Properties->LastSDF = FractalJSON.LastSDF;
+				}
+			}
+		}
+	);
+
 	
-}
-
-
-FInputRayHit UFractals3DInteractiveTool::CanBeginClickDragSequence(const FInputDeviceRay& PressPos)
-{
-	return FInputRayHit();
-}
-
-
-void UFractals3DInteractiveTool::OnClickPress(const FInputDeviceRay& PressPos)
-{
-	//UpdatePosition(PressPos.WorldRay);
-}
-
-
-void UFractals3DInteractiveTool::OnClickDrag(const FInputDeviceRay& DragPos)
-{
-	//UpdatePosition(DragPos.WorldRay);
 }
 
 void UFractals3DInteractiveTool::OnPropertyModified(UObject* PropertySet, FProperty* Property)
 {
-	// if the user updated any of the property fields, update the distance
-	//UpdateDistance();
-	GenerateFractal();
+
 }
 
 FString FunctionNameBySDFType(FractalConfigSDF Type)
@@ -161,13 +163,13 @@ bool IsOrbit(FractalConfigSDF Type)
 	return Type == FractalConfigSDF::OrbitColoring;
 }
 
-void UFractals3DInteractiveTool::GenerateFractal() {
+void UFractals3DInteractiveTool::GenerateFractal() const {
 	FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
 	FString GeneratedShadersDir = FPaths::Combine(PluginShaderDir, TEXT("GeneratedSDF"));
 	FString CurrentShaderDir = FPaths::Combine(GeneratedShadersDir, Properties->FractalName);
 
-	std::filesystem::remove_all(std::filesystem::path(*CurrentShaderDir));
-	std::filesystem::create_directory(std::filesystem::path(*CurrentShaderDir));
+	std::filesystem::remove_all(std::filesystem::path(TCHAR_TO_ANSI(*CurrentShaderDir)));
+	std::filesystem::create_directory(std::filesystem::path(TCHAR_TO_ANSI(*CurrentShaderDir)));
 
 	// Fill MainShader
 	FString MainShaderFilename = Properties->FractalName;
@@ -222,6 +224,17 @@ void UFractals3DInteractiveTool::GenerateFractal() {
 	foutMainShader << std::string(TCHAR_TO_ANSI(* MainShader));
 	std::ofstream foutSdfShader(*FPaths::Combine(CurrentShaderDir, SdfShaderFilename));
 	foutSdfShader << std::string(TCHAR_TO_ANSI(* SdfShader));
+
+	FString Buffer;
+	FJsonFractalProperties Fractal;
+	Fractal.FractalConfig = Properties->FractalConfig;
+	Fractal.LastSDF = Properties->LastSDF;
+
+	FJsonObjectConverter::UStructToJsonObjectString(Fractal, Buffer);
+
+	std::ofstream foutShaderJson(*FPaths::Combine(CurrentShaderDir, "Conf.json"));
+	foutShaderJson << std::string(TCHAR_TO_ANSI(*Buffer));
+
 }
 
 

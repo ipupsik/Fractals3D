@@ -2,6 +2,9 @@
 
 #include "Fractals3DEditorModeToolkit.h"
 #include "Fractals3DEditorMode.h"
+#include "Tools/Fractals3DInteractiveTool.h"
+#include "Fractals3DEditorModeCommands.h"
+#include "EdModeInteractiveToolsContext.h"
 #include "Engine/Selection.h"
 #include "Widgets/Layout/SScrollBox.h"
 #include "Fractals3DEditorModeCommands.h"
@@ -22,65 +25,54 @@ void FFractals3DEditorModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTool
 {
 	FModeToolkit::Init(InitToolkitHost, InOwningMode);
 
-	float Padding = 4.0f;
-	FMargin MorePadding = FMargin(10.0f, 2.0f);
-	SAssignNew(ToolkitWidget, SBox)
+
+	SAssignNew(ViewportOverlayWidget, SHorizontalBox)
+
+		+ SHorizontalBox::Slot()
+		.HAlign(HAlign_Center)
+		.VAlign(VAlign_Bottom)
+		.Padding(FMargin(0.0f, 0.0f, 0.f, 15.f))
 		[
-			SNew(SVerticalBox)
-
-			+ SVerticalBox::Slot()
+			SNew(SBorder)
+			.BorderImage(FAppStyle::Get().GetBrush("EditorViewport.OverlayBrush"))
+		.Padding(8.f)
 		[
+			SNew(SHorizontalBox)
 
-			SNew(SSplitter)
-			.Orientation(Orient_Vertical)
-		+ SSplitter::Slot()
-		.Value(1.f)
-				[
-					SNew(SVerticalBox)
-					+ SVerticalBox::Slot()
-				.FillHeight(1.0)
-				[
-					SNew(SScrollBox)
-					+ SScrollBox::Slot()
-				[
-					DetailsView.ToSharedRef()
-				]
-				]
-			+ SVerticalBox::Slot()
-				.AutoHeight()
-				[
-					SNew(SHorizontalBox)
-					+ SHorizontalBox::Slot()
-				[
-					SNew(SSpacer)
-				]
-
-			+ SHorizontalBox::Slot()
-				.Padding(4.0)
-				.AutoWidth()
-				[
-					SNew(SPrimaryButton)
-					.OnClicked(this, &FFractals3DEditorModeToolkit::OnFractalGenerateClicked)
-				.IsEnabled(this, &FFractals3DEditorModeToolkit::CanExecuteFractalGenerate)
-				.Text_Lambda([this]() -> FText { return LOCTEXT("FractalGenerateButton", "Generate Fractal"); })
-				]
-
-			+ SHorizontalBox::Slot()
-				.Padding(4.0)
-				.AutoWidth()
-				[
-					SNew(SButton)
-				.Text(FText(LOCTEXT("FractalGenerateButton", "Generate Fractal")))
-				]
-				]
-				]
+		+ SHorizontalBox::Slot()
+		.AutoWidth()
+		.Padding(FMargin(0.0, 0.f, 2.f, 0.f))
+		[
+			SNew(SPrimaryButton)
+			.Text(LOCTEXT("OverlayGenerate", "Generate"))
+		.ToolTipText(LOCTEXT("OverlayGenerateTooltip", "Generate 3d fractal by specified params"))
+		.OnClicked(this, &FFractals3DEditorModeToolkit::OnFractalGenerateClicked)
+		]
 		]
 		];
 }
 
+void FFractals3DEditorModeToolkit::OnToolStarted(UInteractiveToolManager* Manager, UInteractiveTool* Tool)
+{
+	FModeToolkit::OnToolStarted(Manager, Tool);
+
+	// Add the accept/cancel overlay only if the tool is not the default tool.
+	GetToolkitHost()->AddViewportOverlayWidget(ViewportOverlayWidget.ToSharedRef());
+}
+
+void FFractals3DEditorModeToolkit::OnToolEnded(UInteractiveToolManager* Manager, UInteractiveTool* Tool)
+{
+	FModeToolkit::OnToolEnded(Manager, Tool);
+
+	if (IsHosted())
+	{
+		GetToolkitHost()->RemoveViewportOverlayWidget(ViewportOverlayWidget.ToSharedRef());
+	}
+}
+
 FReply FFractals3DEditorModeToolkit::OnFractalGenerateClicked()
 {
-	//FFractals3DEditorModeCommands::Get().InteractiveTool->(StaticCastSharedRef<FFractals3DEditorModeToolkit>(AsShared()));
+	FFractals3DEditorModeCommands::Get().UseFractalTool();
 
 	return FReply::Handled();
 }

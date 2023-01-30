@@ -40,6 +40,8 @@ public class Fractals3D : ModuleRules
                 "RenderCore",
                 "ToolWidgets",
                 "Slate",
+				"Json",
+                "JsonUtilities",
 				"SlateCore",
 				"InputCore",
 				"EditorFramework",
