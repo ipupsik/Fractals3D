@@ -77,44 +77,65 @@ void UFractals3DInteractiveTool::OnPropertyModified(UObject* PropertySet, FPrope
 
 }
 
+FString FunctionNameByFoldType(FractalFoldConfig Type)
+{
+	switch (Type)
+	{
+		case FractalFoldConfig::PlaneFold: return "planeFold";
+		case FractalFoldConfig::AbsFold: return "absFold";
+		case FractalFoldConfig::SierpinskiFold: return "sierpinskiFold";
+		case FractalFoldConfig::MengerFold: return "mengerFold";
+		case FractalFoldConfig::SphereFold: return "sphereFold";
+		case FractalFoldConfig::BoxFold: return "boxFold";
+		case FractalFoldConfig::RotXFold: return "rotXFold";
+		case FractalFoldConfig::RotYFold: return "rotYFold";
+		case FractalFoldConfig::RotZFold: return "rotZFold";
+		case FractalFoldConfig::ScaleTranslateFold: return "scaleTranslateFold";
+		case FractalFoldConfig::ScaleOriginFold: return "scaleOriginFold";
+		case FractalFoldConfig::OrbitColoring: return "orbitByType";
+	}
+
+	return "Error";
+}
+
+FString FunctionArgumentsByFoldType(FractalFoldConfig Type)
+{
+	switch (Type)
+	{
+		case FractalFoldConfig::PlaneFold: return "(new_p, float3(0, 0, -1), -1)";
+		case FractalFoldConfig::AbsFold: return "(new_p, float3(0.0f, 0.0f, 0.0f))";
+		case FractalFoldConfig::SierpinskiFold: return "(new_p)";
+		case FractalFoldConfig::MengerFold: return "(new_p)";
+		case FractalFoldConfig::SphereFold: return "(new_p, 0.5, 1.0f)";
+		case FractalFoldConfig::BoxFold: return "(new_p, library.FoldSize)";
+		case FractalFoldConfig::RotXFold: return "(new_p, library.FoldAngles.x)";
+		case FractalFoldConfig::RotYFold: return "(new_p, library.FoldAngles.y)";
+		case FractalFoldConfig::RotZFold: return "(new_p, library.FoldAngles.z)";
+		case FractalFoldConfig::ScaleTranslateFold: return "(new_p, library.FoldingScale, library.Power * library.FoldOffset)";
+		case FractalFoldConfig::ScaleOriginFold: return "(new_p, library.FoldingScale)";
+		case FractalFoldConfig::OrbitColoring: return "(orbit, new_p)";
+	}
+	return "Error";
+}
+
 FString FunctionNameBySDFType(FractalConfigSDF Type)
 {
 	switch (Type)
 	{
-		case FractalConfigSDF::PlaneFold: return "planeFold";
-		case FractalConfigSDF::AbsFold: return "absFold";
-		case FractalConfigSDF::SierpinskiFold: return "sierpinskiFold";
-		case FractalConfigSDF::MengerFold: return "mengerFold";
-		case FractalConfigSDF::SphereFold: return "sphereFold";
-		case FractalConfigSDF::BoxFold: return "boxFold";
-		case FractalConfigSDF::RotXFold: return "rotXFold";
-		case FractalConfigSDF::RotYFold: return "rotYFold";
-		case FractalConfigSDF::RotZFold: return "rotZFold";
-		case FractalConfigSDF::ScaleTranslateFold: return "scaleTranslateFold";
-		case FractalConfigSDF::ScaleOriginFold: return "scaleOriginFold";
-		case FractalConfigSDF::OrbitColoring: return "orbitByType";
-		case FractalConfigSDF::Cone: return "sdCone";
-		case FractalConfigSDF::HexPrism: return "sdHexPrism";
-		case FractalConfigSDF::Sphere: return "sdSphere";
-		case FractalConfigSDF::Capsule: return "sdCapsule";
-		case FractalConfigSDF::Torus: return "sdTorus";
-		case FractalConfigSDF::Box: return "sdBox";
-		case FractalConfigSDF::Tetrahedron: return "sdTetrahedron";
-		case FractalConfigSDF::InfCross: return "sdInfCross";
-		case FractalConfigSDF::InfCrossXY: return "sdInfCrossXY";
-		case FractalConfigSDF::InfLine: return "sdInfLine";
-		case FractalConfigSDF::Mandelbox: return "sdMandelBox";
-		case FractalConfigSDF::ButterweedHiils: return "sdButterweedHills";
-		case FractalConfigSDF::Mausoleum: return "sdMausoleum";
-		case FractalConfigSDF::SnowStadium: return "sdSnowStadium";
-		case FractalConfigSDF::Menger: return "sdMenger";
-		case FractalConfigSDF::Sierpinski: return "sdSerpinski";
-		case FractalConfigSDF::Tree: return "sdTree";
-		case FractalConfigSDF::Julia2: return "sdJulia2";
-		case FractalConfigSDF::Julia: return "sdJulia";
-		case FractalConfigSDF::Mandelbrot: return "sdMondelbrot";
+	case FractalConfigSDF::Cone: return "sdCone";
+	case FractalConfigSDF::HexPrism: return "sdHexPrism";
+	case FractalConfigSDF::Sphere: return "sdSphere";
+	case FractalConfigSDF::Capsule: return "sdCapsule";
+	case FractalConfigSDF::Torus: return "sdTorus";
+	case FractalConfigSDF::Box: return "sdBox";
+	case FractalConfigSDF::Tetrahedron: return "sdTetrahedron";
+	case FractalConfigSDF::InfCross: return "sdInfCross";
+	case FractalConfigSDF::InfCrossXY: return "sdInfCrossXY";
+	case FractalConfigSDF::InfLine: return "sdInfLine";
+	case FractalConfigSDF::Julia2: return "sdJulia2";
+	case FractalConfigSDF::Julia: return "sdJulia";
+	case FractalConfigSDF::Mandelbrot: return "sdMondelbrot";
 	}
-
 	return "Error";
 }
 
@@ -122,45 +143,28 @@ FString FunctionArgumentsBySDFType(FractalConfigSDF Type)
 {
 	switch (Type)
 	{
-		case FractalConfigSDF::PlaneFold: return "(new_p, float3(0, 0, -1), -1)";
-		case FractalConfigSDF::AbsFold: return "(new_p, float3(0.0f, 0.0f, 0.0f))";
-		case FractalConfigSDF::SierpinskiFold: return "(new_p)";
-		case FractalConfigSDF::MengerFold: return "(new_p)";
-		case FractalConfigSDF::SphereFold: return "(new_p, 0.5, 1.0f)";
-		case FractalConfigSDF::BoxFold: return "(new_p, FoldSize)";
-		case FractalConfigSDF::RotXFold: return "(new_p, FoldAngles.x)";
-		case FractalConfigSDF::RotYFold: return "(new_p, FoldAngles.y)";
-		case FractalConfigSDF::RotZFold: return "(new_p, FoldAngles.z)";
-		case FractalConfigSDF::ScaleTranslateFold: return "(new_p, FoldingScale, Power * FoldOffset)";
-		case FractalConfigSDF::ScaleOriginFold: return "(new_p, FoldingScale)";
-		case FractalConfigSDF::OrbitColoring: return "(orbit, new_p)";
-		case FractalConfigSDF::Cone: return "(new_p, float2(0.0f, 0.0f), Offset)";
-		case FractalConfigSDF::HexPrism: return "(new_p, float2(Offset, Offset))";
-		case FractalConfigSDF::Sphere: return "(new_p, Offset)";
-		case FractalConfigSDF::Capsule: return "(new_p, FoldingScale, Offset)";
-		case FractalConfigSDF::Torus: return "(new_p, float2(Offset, Offset))";
-		case FractalConfigSDF::Box: return "(new_p, float3(Offset, Offset, Offset))";
-		case FractalConfigSDF::Tetrahedron: return "(new_p, Offset)";
-		case FractalConfigSDF::InfCross: return "(new_p, Offset)";
-		case FractalConfigSDF::InfCrossXY: return "(new_p, Offset)";
-		case FractalConfigSDF::InfLine: return "(new_p, Offset)";
-		case FractalConfigSDF::Mandelbox: return "(new_p).x";
-		case FractalConfigSDF::ButterweedHiils: return "(new_p).x";
-		case FractalConfigSDF::Mausoleum: return "(new_p).x";
-		case FractalConfigSDF::SnowStadium: return "(new_p).x";
-		case FractalConfigSDF::Menger: return "(new_p).x";
-		case FractalConfigSDF::Sierpinski: return "(new_p).x";
-		case FractalConfigSDF::Tree: return "(new_p).x";
-		case FractalConfigSDF::Julia2: return "(new_p, outputColor).x";
-		case FractalConfigSDF::Julia: return "(new_p, outputColor).x";
-		case FractalConfigSDF::Mandelbrot: return "(new_p, outputColor).x";
+	case FractalConfigSDF::Cone: return "(new_p, float2(0.0f, 0.0f), library.Offset)";
+	case FractalConfigSDF::HexPrism: return "(new_p, float2(library.Offset, library.Offset))";
+	case FractalConfigSDF::Sphere: return "(new_p, library.Offset)";
+	case FractalConfigSDF::Capsule: return "(new_p, library.FoldingScale, library.Offset)";
+	case FractalConfigSDF::Torus: return "(new_p, float2(library.Offset, library.Offset))";
+	case FractalConfigSDF::Box: return "(new_p, float3(library.Offset, library.Offset, library.Offset))";
+	case FractalConfigSDF::Tetrahedron: return "(new_p, library.Offset)";
+	case FractalConfigSDF::InfCross: return "(new_p, library.Offset)";
+	case FractalConfigSDF::InfCrossXY: return "(new_p, library.Offset)";
+	case FractalConfigSDF::InfLine: return "(new_p, library.Offset)";
+	case FractalConfigSDF::Julia2: return "(new_p, outputColor).x";
+	case FractalConfigSDF::Julia: return "(new_p, outputColor).x";
+	case FractalConfigSDF::Mandelbrot: return "(new_p, outputColor).x";
 	}
 	return "Error";
 }
 
-bool IsOrbit(FractalConfigSDF Type)
+
+
+bool IsOrbit(FractalFoldConfig Type)
 {
-	return Type == FractalConfigSDF::OrbitColoring;
+	return Type == FractalFoldConfig::OrbitColoring;
 }
 
 void UFractals3DInteractiveTool::GenerateFractal() const {
@@ -176,9 +180,10 @@ void UFractals3DInteractiveTool::GenerateFractal() const {
 	MainShaderFilename += ".ush";
 	FString MainShader = "#include \"/PluginShaders/SDFractalLibrary.ush\"\n"
 		"\n"
-		"SDFractal sdfLibrary;\n"
-		"\n"
 		"struct SDF {\n"
+		"SDFractal library;\n"
+		"float3 outputColor;\n"
+		"\n"
 		"#include \"/PluginShaders/GeneratedSDF/";
 	MainShader += Properties->FractalName;
 	MainShader += "/";
@@ -192,22 +197,22 @@ void UFractals3DInteractiveTool::GenerateFractal() const {
 	// Fill SDF Shader
 	FString SdfShaderFilename = Properties->FractalName;
 	SdfShaderFilename += "SDF.ush";
-	FString SdfShader = "float2 sdf(float3 p, out float3 outputColor) {\n"
-		"	outputColor = orbitInitInf();\n"
+	FString SdfShader = "float2 sdf(float3 p) {\n"
+		"	outputColor = library.orbitInitInf();\n"
 		"	float4 new_p = float4(p, 1.0f);\n"
 		"	float d = 1e20;\n"
-		"	for (int i = 0; i < Iterations; i++) {\n"
+		"	for (int i = 0; i < library.Iterations; i++) {\n"
 		"";
 
 	for (int i = 0; i < Properties->FractalConfig.Num(); ++i)
 	{
 		if (IsOrbit(Properties->FractalConfig[i]))
-			SdfShader += "		orbit = orbitByType(orbit, new_p);\n";
+			SdfShader += "		outputColor = library.orbitByType(outputColor, new_p);\n";
 		else
 		{
-			SdfShader += "		new_p = ";
-			SdfShader += FunctionNameBySDFType(Properties->FractalConfig[i]);
-			SdfShader += FunctionArgumentsBySDFType(Properties->FractalConfig[i]);
+			SdfShader += "		new_p = library.";
+			SdfShader += FunctionNameByFoldType(Properties->FractalConfig[i]);
+			SdfShader += FunctionArgumentsByFoldType(Properties->FractalConfig[i]);
 			SdfShader += ";\n";
 		}
 	}
@@ -215,11 +220,12 @@ void UFractals3DInteractiveTool::GenerateFractal() const {
 	SdfShader += "\n"
 		"	}\n";
 
-	SdfShader += "\n"
-		"	return float2(min(d, ";
+	SdfShader += "\n	d = min(d, library.";
 	SdfShader += FunctionNameBySDFType(Properties->LastSDF);
 	SdfShader += FunctionArgumentsBySDFType(Properties->LastSDF);
-	SdfShader += "), length(new_p));\n"
+	SdfShader += ");\n";
+
+	SdfShader += "	return float2(d, length(new_p));\n"
 		"}\n";
 
 	std::ofstream foutMainShader(*FPaths::Combine(CurrentShaderDir, MainShaderFilename));

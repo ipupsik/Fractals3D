@@ -21,8 +21,9 @@ public:
 	virtual UInteractiveTool* BuildTool(const FToolBuilderState& SceneState) const override;
 };
 
+
 UENUM()
-enum class FractalConfigSDF {
+enum class FractalFoldConfig {
 	PlaneFold,
 	AbsFold,
 	SierpinskiFold,
@@ -35,6 +36,10 @@ enum class FractalConfigSDF {
 	ScaleTranslateFold,
 	ScaleOriginFold,
 	OrbitColoring,
+};
+
+UENUM()
+enum class FractalConfigSDF {
 	Cone,
 	HexPrism,
 	Sphere,
@@ -48,13 +53,6 @@ enum class FractalConfigSDF {
 	Mandelbrot,
 	Julia,
 	Julia2,
-	Tree,
-	Sierpinski,
-	Menger,
-	SnowStadium,
-	Mausoleum,
-	ButterweedHiils,
-	Mandelbox
 };
 
 USTRUCT()
@@ -64,7 +62,7 @@ struct FJsonFractalProperties
 
 public:
 	UPROPERTY()
-		TArray<FractalConfigSDF> FractalConfig;
+		TArray<FractalFoldConfig> FractalConfig;
 
 	UPROPERTY()
 		FractalConfigSDF LastSDF;
@@ -85,7 +83,7 @@ public:
 		FString FractalName;
 
 	UPROPERTY(EditAnywhere, Category = Options)
-		TArray<FractalConfigSDF> FractalConfig;
+		TArray<FractalFoldConfig> FractalConfig;
 	
 	UPROPERTY(EditAnywhere, Category = Options)
 		FractalConfigSDF LastSDF;

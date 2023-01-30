@@ -18,22 +18,20 @@ pCameraVector = float3(Xcomponent, Ycomponent, Zcomponent);
 
 float t = pMinDist;
 
-sdfLibrary.initialize(pIterations, pBailout, pPower, 
+SDF sdf;
+
+sdf.library.initialize(pIterations, pBailout, pPower, 
 	pFoldingScale,
 	pCameraVector, pScale, pOrbit, pOrbitType,
 	pOrbitOrigin, pFoldAngles, pFoldOffset,
 	pFoldSize, pOffset, pTime, pLoop, pTwistXP, pTwistYP, pTwistZP,
 	pHelix, pBlackHole);
 
-float3 unusedOutputColor = float3(0, 0, 0);
-
-SDF sdf;
-
 for (i = 0; i < pMaxSteps; i++)
 {
 	float3 pos = base_pos + pCameraVector * t;
 
-	float2 dist = sdf.sdf(pos, OutputColor);
+	float2 dist = sdf.sdf(pos);
 
 	t += dist.x;
 
@@ -48,12 +46,12 @@ for (i = 0; i < pMaxSteps; i++)
 		{
 			float3 k = float3(1,-1,0);
 
-			float dx = 0.01; float3 unusedOutputColor = float3(0, 0, 0);
+			float dx = 0.01;
 
-			normal = normalize(k.xyy * sdf.sdf(pos + (k.xyyz*dx).xyz, unusedOutputColor).x +
-							 k.yyx * sdf.sdf(pos + (k.yyxz*dx).xyz, unusedOutputColor).x +
-							 k.yxy * sdf.sdf(pos + (k.yxyz*dx).xyz, unusedOutputColor).x +
-							 k.xxx * sdf.sdf(pos + (k.xxxz*dx).xyz, unusedOutputColor).x);
+			normal = normalize(k.xyy * sdf.sdf(pos + (k.xyyz*dx).xyz).x +
+							 k.yyx * sdf.sdf(pos + (k.yyxz*dx).xyz).x +
+							 k.yxy * sdf.sdf(pos + (k.yxyz*dx).xyz).x +
+							 k.xxx * sdf.sdf(pos + (k.xxxz*dx).xyz).x);
 
 			float NXcomponent = dot(normal, float3(pRotMatRow1.x , pRotMatRow2.x, pRotMatRow3.x));
 			float NYcomponent = dot(normal, float3(pRotMatRow1.y , pRotMatRow2.y, pRotMatRow3.y));
@@ -69,5 +67,7 @@ for (i = 0; i < pMaxSteps; i++)
 		break;
 	}
 }
+
+OutputColor = sdf.outputColor;
 
 return float4(normal, col.a);
