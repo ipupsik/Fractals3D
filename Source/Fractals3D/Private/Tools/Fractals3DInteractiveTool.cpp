@@ -181,6 +181,8 @@ void UFractals3DInteractiveTool::GenerateFractal() const {
 		"struct SDF {\n"
 		"#include \"/PluginShaders/GeneratedSDF/";
 	MainShader += Properties->FractalName;
+	MainShader += "/";
+	MainShader += Properties->FractalName;
 	MainShader += "SDF.ush\"\n"
 		"};\n"
 		"\n"
