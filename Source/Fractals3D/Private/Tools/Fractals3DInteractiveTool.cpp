@@ -151,9 +151,9 @@ FString FunctionArgumentsBySDFType(FractalConfigSDF Type)
 		case FractalConfigSDF::Menger: return "(new_p).x";
 		case FractalConfigSDF::Sierpinski: return "(new_p).x";
 		case FractalConfigSDF::Tree: return "(new_p).x";
-		case FractalConfigSDF::Julia2: return "(new_p).x";
-		case FractalConfigSDF::Julia: return "(new_p).x";
-		case FractalConfigSDF::Mandelbrot: return "(new_p).x";
+		case FractalConfigSDF::Julia2: return "(new_p, outputColor).x";
+		case FractalConfigSDF::Julia: return "(new_p, outputColor).x";
+		case FractalConfigSDF::Mandelbrot: return "(new_p, outputColor).x";
 	}
 	return "Error";
 }
@@ -174,7 +174,7 @@ void UFractals3DInteractiveTool::GenerateFractal() const {
 	// Fill MainShader
 	FString MainShaderFilename = Properties->FractalName;
 	MainShaderFilename += ".ush";
-	FString MainShader = "#include \"/PluginShaders/SDFractalLibraryNew.ush\"\n"
+	FString MainShader = "#include \"/PluginShaders/SDFractalLibrary.ush\"\n"
 		"\n"
 		"SDFractal sdfLibrary;\n"
 		"\n"
@@ -184,7 +184,7 @@ void UFractals3DInteractiveTool::GenerateFractal() const {
 	MainShader += "SDF.ush\"\n"
 		"};\n"
 		"\n"
-		"#include \"/PluginShaders/RayMarchingFractalNew.ush\"\n"
+		"#include \"/PluginShaders/RayMarchingFractal.ush\"\n"
 		;
 
 	// Fill SDF Shader
