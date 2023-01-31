@@ -52,13 +52,19 @@ void UFractals3DInteractiveTool::Setup()
 	Properties->WatchProperty(Properties->FractalName,
 		[this](FString FractalName) {
 			FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
-			FString GeneratedShadersDir = FPaths::Combine(PluginShaderDir, TEXT("GeneratedSDF"));
-			FString CurrentShaderDir = FPaths::Combine(GeneratedShadersDir, Properties->FractalName);
+			
+			FString ShaderName = Properties->FractalName;
+			ShaderName += ".ush";
+			FString JsonName = Properties->FractalName;
+			JsonName += "_Conf.json";
 
-			if (std::filesystem::exists(std::filesystem::path(TCHAR_TO_ANSI(*CurrentShaderDir)))) {
+			FString Shader = FPaths::Combine(PluginShaderDir, ShaderName);
+			FString Json = FPaths::Combine(PluginShaderDir, JsonName);
+
+			if (std::filesystem::exists(std::filesystem::path(TCHAR_TO_ANSI(*Shader)))) {
 				FString FileData = "";
 				FJsonFractalProperties FractalJSON;
-				FFileHelper::LoadFileToString(FileData, *FPaths::Combine(CurrentShaderDir, "Conf.json"));
+				FFileHelper::LoadFileToString(FileData, *Json);
 
 				if (FJsonObjectConverter::JsonObjectStringToUStruct(FileData, &FractalJSON, 0, 0))
 				{
@@ -169,24 +175,24 @@ bool IsOrbit(FractalFoldConfig Type)
 
 void UFractals3DInteractiveTool::GenerateFractal() const {
 	FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
-	FString GeneratedShadersDir = FPaths::Combine(PluginShaderDir, TEXT("GeneratedSDF"));
-	FString CurrentShaderDir = FPaths::Combine(GeneratedShadersDir, Properties->FractalName);
 
-	std::filesystem::remove_all(std::filesystem::path(TCHAR_TO_ANSI(*CurrentShaderDir)));
-	std::filesystem::create_directory(std::filesystem::path(TCHAR_TO_ANSI(*CurrentShaderDir)));
-
-	// Fill MainShader
 	FString MainShaderFilename = Properties->FractalName;
 	MainShaderFilename += ".ush";
+
+	FString SdfShaderFilename = Properties->FractalName;
+	SdfShaderFilename += "SDF.ush";
+
+	std::filesystem::remove(std::filesystem::path(TCHAR_TO_ANSI(*FPaths::Combine(PluginShaderDir, MainShaderFilename))));
+	std::filesystem::remove(std::filesystem::path(TCHAR_TO_ANSI(*FPaths::Combine(PluginShaderDir, SdfShaderFilename))));
+
+	// Fill MainShader
 	FString MainShader = "#include \"/PluginShaders/SDFractalLibrary.ush\"\n"
 		"\n"
 		"struct SDF {\n"
 		"SDFractal library;\n"
 		"float3 outputColor;\n"
 		"\n"
-		"#include \"/PluginShaders/GeneratedSDF/";
-	MainShader += Properties->FractalName;
-	MainShader += "/";
+		"#include \"/PluginShaders/";
 	MainShader += Properties->FractalName;
 	MainShader += "SDF.ush\"\n"
 		"};\n"
@@ -195,8 +201,6 @@ void UFractals3DInteractiveTool::GenerateFractal() const {
 		;
 
 	// Fill SDF Shader
-	FString SdfShaderFilename = Properties->FractalName;
-	SdfShaderFilename += "SDF.ush";
 	FString SdfShader = "float2 sdf(float3 p) {\n"
 		"	outputColor = library.orbitInitInf();\n"
 		"	float4 new_p = float4(p, 1.0f);\n"
@@ -228,9 +232,9 @@ void UFractals3DInteractiveTool::GenerateFractal() const {
 	SdfShader += "	return float2(d, length(new_p));\n"
 		"}\n";
 
-	std::ofstream foutMainShader(*FPaths::Combine(CurrentShaderDir, MainShaderFilename));
+	std::ofstream foutMainShader(*FPaths::Combine(PluginShaderDir, MainShaderFilename));
 	foutMainShader << std::string(TCHAR_TO_ANSI(* MainShader));
-	std::ofstream foutSdfShader(*FPaths::Combine(CurrentShaderDir, SdfShaderFilename));
+	std::ofstream foutSdfShader(*FPaths::Combine(PluginShaderDir, SdfShaderFilename));
 	foutSdfShader << std::string(TCHAR_TO_ANSI(* SdfShader));
 
 	FString Buffer;
@@ -240,7 +244,10 @@ void UFractals3DInteractiveTool::GenerateFractal() const {
 
 	FJsonObjectConverter::UStructToJsonObjectString(Fractal, Buffer);
 
-	std::ofstream foutShaderJson(*FPaths::Combine(CurrentShaderDir, "Conf.json"));
+	FString ConfigName = Properties->FractalName;
+	ConfigName += "_Conf.json";
+
+	std::ofstream foutShaderJson(*FPaths::Combine(PluginShaderDir, ConfigName));
 	foutShaderJson << std::string(TCHAR_TO_ANSI(*Buffer));
 
 }

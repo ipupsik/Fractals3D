@@ -11,8 +11,6 @@ void FFractals3DModule::StartupModule()
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 
 	FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
-	FString GeneratedShadersDir = FPaths::Combine(PluginShaderDir, TEXT("GeneratedSDF"));;
-	AddShaderSourceDirectoryMapping(TEXT("/PluginShaders/GeneratedSDF"), GeneratedShadersDir);
 	AddShaderSourceDirectoryMapping(TEXT("/PluginShaders"), PluginShaderDir);
 
 	FFractals3DEditorModeCommands::Register();
