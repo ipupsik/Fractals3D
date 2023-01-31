@@ -1,0 +1,11 @@
+{
+	"fractalConfig": [
+		"BoxFold",
+		"RotXFold",
+		"SphereFold",
+		"ScaleTranslateFold",
+		"OrbitColoring",
+		"RotYFold"
+	],
+	"lastSDF": "Tetrahedron"
+}

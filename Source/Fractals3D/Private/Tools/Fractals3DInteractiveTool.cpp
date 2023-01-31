@@ -124,49 +124,26 @@ FString FunctionArgumentsByFoldType(FractalFoldConfig Type)
 	return "Error";
 }
 
-FString FunctionNameBySDFType(FractalConfigSDF Type)
+FString FunctionBySDFType(FractalConfigSDF Type)
 {
 	switch (Type)
 	{
-	case FractalConfigSDF::Cone: return "sdCone";
-	case FractalConfigSDF::HexPrism: return "sdHexPrism";
-	case FractalConfigSDF::Sphere: return "sdSphere";
-	case FractalConfigSDF::Capsule: return "sdCapsule";
-	case FractalConfigSDF::Torus: return "sdTorus";
-	case FractalConfigSDF::Box: return "sdBox";
-	case FractalConfigSDF::Tetrahedron: return "sdTetrahedron";
-	case FractalConfigSDF::InfCross: return "sdInfCross";
-	case FractalConfigSDF::InfCrossXY: return "sdInfCrossXY";
-	case FractalConfigSDF::InfLine: return "sdInfLine";
-	case FractalConfigSDF::Julia2: return "sdJulia2";
-	case FractalConfigSDF::Julia: return "sdJulia";
-	case FractalConfigSDF::Mandelbrot: return "sdMondelbrot";
+	case FractalConfigSDF::Cone: return "float2(min(d, library.sdCone(new_p, library.Offset)), length(new_p))";
+	case FractalConfigSDF::HexPrism: return "float2(min(d, library.sdHexPrism(new_p, float2(library.Offset, library.Offset)), length(new_p))";
+	case FractalConfigSDF::Sphere: return "float2(min(d, library.sdSphere(new_p, library.Offset)), length(new_p))";
+	case FractalConfigSDF::Capsule: return "float2(min(d, library.sdCapsule(new_p, library.FoldingScale, library.Offset)), length(new_p))";
+	case FractalConfigSDF::Torus: return "float2(min(d, library.sdTorus(new_p, float2(library.Offset, library.Offset))), length(new_p))";
+	case FractalConfigSDF::Box: return "float2(min(d, library.sdBox(new_p, float3(library.Offset, library.Offset, library.Offset))), length(new_p))";
+	case FractalConfigSDF::Tetrahedron: return "float2(min(d, library.sdTetrahedron(new_p, library.Offset)), length(new_p))";
+	case FractalConfigSDF::InfCross: return "float2(min(d, library.sdInfCross(new_p, library.Offset)), length(new_p))";
+	case FractalConfigSDF::InfCrossXY: return "float2(min(d, library.sdInfCrossXY(new_p, library.Offset)), length(new_p))";
+	case FractalConfigSDF::InfLine: return "float2(min(d, library.sdInfLine(new_p, library.Offset)), length(new_p))";
+	case FractalConfigSDF::Julia2: return "library.sdJulia(new_p, outputColor)";
+	case FractalConfigSDF::Julia: return "library.sdJulia2(new_p, outputColor)";
+	case FractalConfigSDF::Mandelbrot: return "library.sdMondelbrot(new_p, outputColor)";
 	}
 	return "Error";
 }
-
-FString FunctionArgumentsBySDFType(FractalConfigSDF Type)
-{
-	switch (Type)
-	{
-	case FractalConfigSDF::Cone: return "(new_p, float2(0.0f, 0.0f), library.Offset)";
-	case FractalConfigSDF::HexPrism: return "(new_p, float2(library.Offset, library.Offset))";
-	case FractalConfigSDF::Sphere: return "(new_p, library.Offset)";
-	case FractalConfigSDF::Capsule: return "(new_p, library.FoldingScale, library.Offset)";
-	case FractalConfigSDF::Torus: return "(new_p, float2(library.Offset, library.Offset))";
-	case FractalConfigSDF::Box: return "(new_p, float3(library.Offset, library.Offset, library.Offset))";
-	case FractalConfigSDF::Tetrahedron: return "(new_p, library.Offset)";
-	case FractalConfigSDF::InfCross: return "(new_p, library.Offset)";
-	case FractalConfigSDF::InfCrossXY: return "(new_p, library.Offset)";
-	case FractalConfigSDF::InfLine: return "(new_p, library.Offset)";
-	case FractalConfigSDF::Julia2: return "(new_p, outputColor).x";
-	case FractalConfigSDF::Julia: return "(new_p, outputColor).x";
-	case FractalConfigSDF::Mandelbrot: return "(new_p, outputColor).x";
-	}
-	return "Error";
-}
-
-
 
 bool IsOrbit(FractalFoldConfig Type)
 {
@@ -224,13 +201,9 @@ void UFractals3DInteractiveTool::GenerateFractal() const {
 	SdfShader += "\n"
 		"	}\n";
 
-	SdfShader += "\n	d = min(d, library.";
-	SdfShader += FunctionNameBySDFType(Properties->LastSDF);
-	SdfShader += FunctionArgumentsBySDFType(Properties->LastSDF);
-	SdfShader += ");\n";
-
-	SdfShader += "	return float2(d, length(new_p));\n"
-		"}\n";
+	SdfShader += "	return ";
+	SdfShader += FunctionBySDFType(Properties->LastSDF);
+	SdfShader += ";\n}\n";
 
 	std::ofstream foutMainShader(*FPaths::Combine(PluginShaderDir, MainShaderFilename));
 	foutMainShader << std::string(TCHAR_TO_ANSI(* MainShader));

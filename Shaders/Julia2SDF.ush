@@ -1,0 +1,9 @@
+float2 sdf(float3 p) {
+	outputColor = library.orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+	float d = 1e20;
+	for (int i = 0; i < library.Iterations; i++) {
+
+	}
+	return library.sdJulia(new_p, outputColor);
+}

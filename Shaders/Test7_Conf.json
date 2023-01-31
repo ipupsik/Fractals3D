@@ -1,0 +1,12 @@
+{
+	"fractalConfig": [
+		"RotYFold",
+		"AbsFold",
+		"RotXFold",
+		"SierpinskiFold",
+		"RotZFold",
+		"ScaleTranslateFold",
+		"OrbitColoring"
+	],
+	"lastSDF": "Sphere"
+}
