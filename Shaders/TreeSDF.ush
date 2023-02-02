@@ -1,0 +1,15 @@
+float2 sdf(float3 p) {
+	outputColor = library.orbitInitInf();
+	float4 new_p = float4(p, 1.0f);
+	float d = 1e20;
+	for (int i = 0; i < library.Iterations; i++) {
+		new_p = library.rotYFold(new_p, library.FoldAngles.y);
+		new_p = library.absFold(new_p, float3(0.0f, 0.0f, 0.0f));
+		new_p = library.mengerFold(new_p);
+		outputColor = library.orbitByType(outputColor, new_p);
+		new_p = library.scaleTranslateFold(new_p, library.FoldingScale, library.Power * library.FoldOffset);
+		new_p = library.planeFold(new_p, float3(0, 0, -1), -1);
+
+	}
+	return float2(min(d, library.sdBox(new_p, float3(library.Offset, library.Offset, library.Offset))), length(new_p));
+}

@@ -33,6 +33,11 @@ for (i = 0; i < pMaxSteps; i++)
 
 	float2 dist = sdf.sdf(pos);
 
+	if (pEnablePlaneClip == 1.0f)
+	{
+		dist.x = max(dist.x, sdf.library.sdBox(float4(pClippingBoxPosition + pos, 1.0), pClippingBoxScale));
+	}  
+
 	t += dist.x;
 
     if (dist.x * pObjectScale < pDisThreshold)
