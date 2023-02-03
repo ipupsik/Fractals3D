@@ -31,4 +31,4 @@ Let's create new fractal!
 
 We get some new fractal based on Mandelbrot (existed MI_Mandelbrot materialm, with its settings by default) with little bit different behaviour!
 
-![image](https://user-images.githubusercontent.com/56448503/216712527-6905afc1-bbe9-4484-9ab4-f5629ee65893.png)
+![image](https://user-images.githubusercontent.com/56448503/216712886-b3b0dcdd-8535-4793-aa20-c8519c4519b1.png)
