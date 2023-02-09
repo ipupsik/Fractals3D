@@ -7,7 +7,7 @@
 	"Description": "Fractal Generation Toolkit",
 	"Category": "Other",
 	"CreatedBy": "PupSik",
-	"WhitelistPlatforms": [ "Win64", "Win32", "Mac", "IOS", "Android" ],
+	"WhitelistPlatforms": [ "Win64", "Win32" ],
 	"CreatedByURL": "https://github.com/Pup-Sik",
 	"DocsURL": "https://github.com/Pup-Sik/Fractals3D",
 	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/a70d6c5f8cdb4673ac86fe8c56e9666b",
