@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright PupSik, 2023. All Rights Reserved.
 
 #include "Fractals3DEditorMode.h"
 #include "Fractals3DEditorModeToolkit.h"
@@ -6,16 +6,7 @@
 #include "InteractiveToolManager.h"
 #include "Fractals3DEditorModeCommands.h"
 
-
-//////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////// 
-// AddYourTool Step 1 - include the header file for your Tools here
-//////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////// 
 #include "Tools/Fractals3DInteractiveTool.h"
-
-// step 2: register a ToolBuilder in FFractals3DEditorMode::Enter() below
-
 
 #define LOCTEXT_NAMESPACE "Fractals3DEditorMode"
 
@@ -48,13 +39,6 @@ void UFractals3DEditorMode::ActorSelectionChangeNotify()
 void UFractals3DEditorMode::Enter()
 {
 	UEdMode::Enter();
-
-	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
-	// AddYourTool Step 2 - register the ToolBuilders for your Tools here.
-	// The string name you pass to the ToolManager is used to select/activate your ToolBuilder later.
-	//////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////// 
 	const FFractals3DEditorModeCommands& SampleToolCommands = FFractals3DEditorModeCommands::Get();
 
 	RegisterTool(SampleToolCommands.InteractiveTool, InteractiveToolName, NewObject<UFractals3DInteractiveToolBuilder>(this));

@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright PupSik, 2023. All Rights Reserved.
 
 #include "Fractals3DModule.h"
 #include "Interfaces/IPluginManager.h"

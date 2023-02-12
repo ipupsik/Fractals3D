@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright PupSik, 2023. All Rights Reserved.
 
 #include "Fractals3DInteractiveTool.h"
 #include "InteractiveToolManager.h"
@@ -19,10 +19,6 @@
 
 // localization namespace
 #define LOCTEXT_NAMESPACE "UFractals3DInteractiveTool"
-
-/*
- * ToolBuilder
- */
 
 UInteractiveTool* UFractals3DInteractiveToolBuilder::BuildTool(const FToolBuilderState & SceneState) const
 {

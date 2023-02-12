@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright PupSik, 2023. All Rights Reserved.
 
 #pragma once
 
@@ -7,9 +7,6 @@
 
 class UFractals3DInteractiveTool;
 
-/**
- * This class contains info about the full set of commands used in this editor mode.
- */
 class FFractals3DEditorModeCommands : public TCommands<FFractals3DEditorModeCommands>
 {
 public:

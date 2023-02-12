@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright PupSik, 2023. All Rights Reserved.
 
 #pragma once
 
@@ -6,14 +6,6 @@
 #include "Tools/UEdMode.h"
 #include "Fractals3DEditorMode.generated.h"
 
-/**
- * This class provides an example of how to extend a UEdMode to add some simple tools
- * using the InteractiveTools framework. The various UEdMode input event handlers (see UEdMode.h)
- * forward events to a UEdModeInteractiveToolsContext instance, which
- * has all the logic for interacting with the InputRouter, ToolManager, etc.
- * The functions provided here are the minimum to get started inserting some custom behavior.
- * Take a look at the UEdMode markup for more extensibility options.
- */
 UCLASS()
 class UFractals3DEditorMode : public UEdMode
 {

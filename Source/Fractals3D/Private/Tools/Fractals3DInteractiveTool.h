@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright PupSik, 2023. All Rights Reserved.
 
 #pragma once
 
@@ -8,9 +8,6 @@
 #include "Fractals3DInteractiveTool.generated.h"
 
 
-/**
- * Builder for UFractals3DInteractiveTool
- */
 UCLASS()
 class FRACTALS3D_API UFractals3DInteractiveToolBuilder : public UInteractiveToolBuilder
 {

@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright PupSik, 2023. All Rights Reserved.
 
 #pragma once
 
@@ -6,10 +6,6 @@
 #include "Toolkits/BaseToolkit.h"
 #include "Fractals3DEditorMode.h"
 
-/**
- * This FModeToolkit just creates a basic UI panel that allows various InteractiveTools to
- * be initialized, and a DetailsView used to show properties of the active Tool.
- */
 class FFractals3DEditorModeToolkit : public FModeToolkit
 {
 public:
