@@ -36,6 +36,6 @@ Let's create new fractal!
 
 ### Enjoy, test, iterate!
 
-We get some new fractal based on Mandelbrot (existed MI_Mandelbrot materialm, with its settings by default) with little bit different behaviour!
+We get some new fractal based on Mandelbrot (existed MI_Mandelbrot material, with its settings by default) with a little bit different behaviour!
 
 ![image](https://user-images.githubusercontent.com/56448503/216712886-b3b0dcdd-8535-4793-aa20-c8519c4519b1.png)
