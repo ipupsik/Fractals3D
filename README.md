@@ -29,7 +29,7 @@ Let's create new fractal!
 
 ![image](https://user-images.githubusercontent.com/56448503/216712168-0d356653-23cc-412e-a684-4250daf469b3.png)
 
-### Create new material by cipying Fractal Master material (root plugin content folder), and type your Fractal Name in custom node like in screenshot
+### Create new material by copying Fractal Master material (root plugin content folder), and type your Fractal Name in custom node like in screenshot
 
 ![image](https://user-images.githubusercontent.com/56448503/216713512-d633c9c7-9e35-41c3-bcbb-03437955cd24.png)
 
