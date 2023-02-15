@@ -2,22 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "InteractiveToolBuilder.h"
-#include "BaseTools/ClickDragTool.h"
+#include "BaseEditorToolCustomization.h"
 #include "Fractals3DInteractiveTool.generated.h"
-
-
-UCLASS()
-class FRACTALS3D_API UFractals3DInteractiveToolBuilder : public UInteractiveToolBuilder
-{
-	GENERATED_BODY()
-
-public:
-	virtual bool CanBuildTool(const FToolBuilderState& SceneState) const override { return true; }
-	virtual UInteractiveTool* BuildTool(const FToolBuilderState& SceneState) const override;
-};
-
 
 UENUM()
 enum class FractalFoldConfig {
@@ -66,47 +52,26 @@ public:
 };
 
 /**
- * Property set for the UFractals3DInteractiveTool
- */
-UCLASS(Transient)
-class FRACTALS3D_API UFractals3DInteractiveToolProperties : public UInteractiveToolPropertySet
-{
-	GENERATED_BODY()
-
-public:
-	UFractals3DInteractiveToolProperties();
-
-	UPROPERTY(EditAnywhere, Category = Options)
-		FString FractalName;
-
-	UPROPERTY(EditAnywhere, Category = Options)
-		TArray<FractalFoldConfig> FractalConfig;
-	
-	UPROPERTY(EditAnywhere, Category = Options)
-		FractalConfigSDF LastSDF;
-};
-
-
-
-/**
  * UFractals3DInteractiveTool is an example Tool that allows the user to measure the 
  * distance between two points. The first point is set by click-dragging the mouse, and
  * the second point is set by shift-click-dragging the mouse.
  */
-UCLASS()
-class FRACTALS3D_API UFractals3DInteractiveTool : public UInteractiveTool
+UCLASS(Blueprintable)
+class UFractals3DInteractiveTool : public UObject
 {
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, Category = Settings)
+		FString FractalName;
+
+	UPROPERTY(EditAnywhere, Category = Settings)
+		TArray<FractalFoldConfig> FractalConfig;
+
+	UPROPERTY(EditAnywhere, Category = Settings)
+		FractalConfigSDF LastSDF;
 	/** UInteractiveTool overrides */
-	virtual void Setup() override;
-	virtual void OnPropertyModified(UObject* PropertySet, FProperty* Property) override;
 
-	void GenerateFractal() const;
-
-protected:
-	/** Properties of the tool are stored here */
-	UPROPERTY()
-	TObjectPtr<UFractals3DInteractiveToolProperties> Properties;
+	UFUNCTION(Exec)
+	void GenerateFractal();
 };
