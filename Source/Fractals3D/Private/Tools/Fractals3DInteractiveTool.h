@@ -82,7 +82,7 @@ UPROPERTY(EditAnywhere, Category = Options)
 };
 
 UCLASS(Blueprintable)
-class UFractals3DInteractiveTool4 : public UObject
+class UFractals3DInteractiveTool4 : public UInteractiveTool
 {
 	GENERATED_BODY()
 public:

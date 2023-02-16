@@ -21,13 +21,16 @@
 // localization namespace
 #define LOCTEXT_NAMESPACE "UFractals3DInteractiveTool"
 
-#if ENGINE_MAJOR_VERSION == 5
+
 UInteractiveTool* UFractals3DInteractiveToolBuilder::BuildTool(const FToolBuilderState& SceneState) const
 {
+#if ENGINE_MAJOR_VERSION == 5
 	UFractals3DInteractiveTool5* NewTool = NewObject<UFractals3DInteractiveTool5>(SceneState.ToolManager);
+#elif ENGINE_MAJOR_VERSION == 4
+	UFractals3DInteractiveTool4* NewTool = NewObject<UFractals3DInteractiveTool4>(SceneState.ToolManager);
+#endif
 	return NewTool;
 }
-#endif
 
 UFractals3DInteractiveToolProperties::UFractals3DInteractiveToolProperties()
 {
