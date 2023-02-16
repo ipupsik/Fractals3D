@@ -27,6 +27,8 @@ UInteractiveTool* UFractals3DInteractiveToolBuilder::BuildTool(const FToolBuilde
 	UFractals3DInteractiveTool* NewTool = NewObject<UFractals3DInteractiveTool>(SceneState.ToolManager);
 	return NewTool;
 }
+#endif
+
 UFractals3DInteractiveToolProperties::UFractals3DInteractiveToolProperties()
 {
 	// initialize the points and distance to reasonable values
@@ -34,6 +36,7 @@ UFractals3DInteractiveToolProperties::UFractals3DInteractiveToolProperties()
 	LastSDF = FractalConfigSDF::Mandelbrot;
 }
 
+#if ENGINE_MAJOR_VERSION == 5
 void UFractals3DInteractiveTool::Setup()
 {
 	UInteractiveTool::Setup();

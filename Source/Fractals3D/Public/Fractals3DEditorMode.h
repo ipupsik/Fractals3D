@@ -2,10 +2,6 @@
 
 #pragma once
 
-#if ENGINE_MAJOR_VERSION == 5
-
-#if WITH_EDITORONLY_DATA
-
 #include "CoreMinimal.h"
 #include "Tools/UEdMode.h"
 #include "Fractals3DEditorMode.generated.h"
@@ -16,6 +12,7 @@ class UFractals3DEditorMode : public UEdMode
 	GENERATED_BODY()
 
 public:
+#if ENGINE_MAJOR_VERSION == 5
 	const static FEditorModeID EM_Fractals3DEditorModeId;
 
 	static FString InteractiveToolName;
@@ -28,8 +25,5 @@ public:
 	virtual void ActorSelectionChangeNotify() override;
 	virtual void CreateToolkit() override;
 	virtual TMap<FName, TArray<TSharedPtr<FUICommandInfo>>> GetModeCommands() const override;
+#endif
 };
-
-#endif
-
-#endif
