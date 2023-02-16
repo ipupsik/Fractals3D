@@ -11,15 +11,15 @@
 #endif
 #include "Fractals3DInteractiveTool.generated.h"
 
-#if ENGINE_MAJOR_VERSION == 5
-
+UCLASS()
 class FRACTALS3D_API UFractals3DInteractiveToolBuilder : public UInteractiveToolBuilder
 {
+	GENERATED_BODY()
+
+public:
 	virtual bool CanBuildTool(const FToolBuilderState& SceneState) const override { return true; }
 	virtual UInteractiveTool* BuildTool(const FToolBuilderState& SceneState) const override;
 };
-
-#endif
 
 UENUM()
 enum class FractalFoldConfig {
