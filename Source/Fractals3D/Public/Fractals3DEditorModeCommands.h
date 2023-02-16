@@ -7,7 +7,7 @@
 #include "CoreMinimal.h"
 #include "Framework/Commands/Commands.h"
 
-class UFractals3DInteractiveTool;
+class UFractals3DInteractiveTool5;
 
 class FFractals3DEditorModeCommands : public TCommands<FFractals3DEditorModeCommands>
 {
@@ -19,12 +19,12 @@ public:
 
 	TSharedPtr<FUICommandInfo> InteractiveTool;
 
-	void SetFractalTool(UFractals3DInteractiveTool* Tool);
+	void SetFractalTool(UFractals3DInteractiveTool5* Tool);
 
 	void UseFractalTool() const;
 
 protected:
-	UFractals3DInteractiveTool* FractalTool;
+	UFractals3DInteractiveTool5* FractalTool;
 
 	TMap<FName, TArray<TSharedPtr<FUICommandInfo>>> Commands;
 };

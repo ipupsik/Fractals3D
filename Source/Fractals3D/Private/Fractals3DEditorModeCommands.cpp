@@ -30,7 +30,7 @@ TMap<FName, TArray<TSharedPtr<FUICommandInfo>>> FFractals3DEditorModeCommands::G
 	return FFractals3DEditorModeCommands::Get().Commands;
 }
 
-void FFractals3DEditorModeCommands::SetFractalTool(UFractals3DInteractiveTool* Tool)
+void FFractals3DEditorModeCommands::SetFractalTool(UFractals3DInteractiveTool5* Tool)
 {
 	FractalTool = Tool;
 }

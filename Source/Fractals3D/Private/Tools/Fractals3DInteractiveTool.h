@@ -86,7 +86,11 @@ class UFractals3DInteractiveTool4 : public UObject
 {
 	GENERATED_BODY()
 public:
+	/** UInteractiveTool overrides */
+	UFUNCTION(Exec)
+		void GenerateFractal();
 
+	void TypedFractalName();
 private:
 
 	UPROPERTY(EditAnywhere, Category = Settings)
@@ -97,12 +101,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Settings)
 		FractalConfigSDF LastSDF;
-
-	/** UInteractiveTool overrides */
-	UFUNCTION(Exec)
-	void GenerateFractal();
-
-	void TypedFractalName();
 };
 
 UCLASS()
@@ -113,15 +111,13 @@ class FRACTALS3D_API UFractals3DInteractiveTool5 : public UInteractiveTool
 public:
 #if ENGINE_MAJOR_VERSION == 5
 	virtual void Setup() override;
+
+	void GenerateFractal();
+
+	void TypedFractalName();
 #endif
 
 private:
 	UPROPERTY()
 		TWeakObjectPtr<UFractals3DInteractiveToolProperties> Properties;
-	/** UInteractiveTool overrides */
-#if ENGINE_MAJOR_VERSION == 5
-	void GenerateFractal();
-
-	void TypedFractalName();
-#endif
 };

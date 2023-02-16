@@ -8,7 +8,15 @@ public class Fractals3D : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
-    #if UE_5_00_OR_LATER
+        PublicDependencyModuleNames.AddRange(
+        new string[]
+        {
+                    "Core",
+            // ... add other public dependencies that you statically link with here ...
+        }
+        );
+
+#if UE_5_0_OR_LATER
         PrivateDependencyModuleNames.AddRange(
             new string[]
             {
@@ -27,16 +35,14 @@ public class Fractals3D : ModuleRules
                 "UnrealEd",
                 "LevelEditor",
                 "InteractiveToolsFramework",
-                "EditorInteractiveToolsFramework"
-				// ... add private dependencies that you statically link with here ...	
+                "EditorInteractiveToolsFramework",
 			}
             );
 
-    #elif UE_4_17_OR_LATER
+#elif UE_4_17_OR_LATER
         PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core",
                 "CoreUObject",
                 "Engine",
                 "Projects",
@@ -52,6 +58,6 @@ public class Fractals3D : ModuleRules
                 "UnrealEd",
             }
 			);
-    #endif
+#endif
     }
 }

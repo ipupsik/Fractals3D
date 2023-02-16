@@ -24,7 +24,7 @@
 #if ENGINE_MAJOR_VERSION == 5
 UInteractiveTool* UFractals3DInteractiveToolBuilder::BuildTool(const FToolBuilderState& SceneState) const
 {
-	UFractals3DInteractiveTool* NewTool = NewObject<UFractals3DInteractiveTool>(SceneState.ToolManager);
+	UFractals3DInteractiveTool5* NewTool = NewObject<UFractals3DInteractiveTool5>(SceneState.ToolManager);
 	return NewTool;
 }
 #endif
@@ -37,21 +37,52 @@ UFractals3DInteractiveToolProperties::UFractals3DInteractiveToolProperties()
 }
 
 #if ENGINE_MAJOR_VERSION == 5
-void UFractals3DInteractiveTool::Setup()
+void UFractals3DInteractiveTool5::Setup()
 {
 	UInteractiveTool::Setup();
 	const_cast<FFractals3DEditorModeCommands&>(FFractals3DEditorModeCommands::Get()).SetFractalTool(this);
 	// Create the property set and register it with the Tool
 	Properties = NewObject<UFractals3DInteractiveToolProperties>(this, "Measurement");
-	AddToolPropertySource(Properties);
+	AddToolPropertySource(Properties.Get());
 	Properties->WatchProperty(Properties->FractalName,
 		[this](FString FractalName) {
 			TypedFractalName();
 		});
 }
+#elif ENGINE_MAJOR_VERSION == 4
+void UFractals3DInteractiveTool5::Setup()
+{
+	
+}
 #endif
 
-void UFractals3DInteractiveTool::TypedFractalName()
+#if ENGINE_MAJOR_VERSION == 5
+void UFractals3DInteractiveTool4::TypedFractalName()
+{
+	
+}
+
+void UFractals3DInteractiveTool4::GenerateFractal()
+{
+
+}
+#elif ENGINE_MAJOR_VERSION == 4
+void UFractals3DInteractiveTool5::TypedFractalName()
+{
+
+}
+
+void UFractals3DInteractiveTool5::GenerateFractal()
+{
+
+}
+#endif
+
+#if ENGINE_MAJOR_VERSION == 5
+void UFractals3DInteractiveTool5::TypedFractalName()
+#elif ENGINE_MAJOR_VERSION == 4
+void UFractals3DInteractiveTool4::TypedFractalName()
+#endif
 {
 #if ENGINE_MAJOR_VERSION == 5
 	FString& FractalName = Properties->FractalName;
@@ -148,7 +179,12 @@ bool IsOrbit(FractalFoldConfig Type)
 	return Type == FractalFoldConfig::OrbitColoring;
 }
 
-void UFractals3DInteractiveTool::GenerateFractal() {
+#if ENGINE_MAJOR_VERSION == 5
+void UFractals3DInteractiveTool5::GenerateFractal() 
+#elif ENGINE_MAJOR_VERSION == 4
+void UFractals3DInteractiveTool4::GenerateFractal()
+#endif
+{
 #if ENGINE_MAJOR_VERSION == 5
 	FString& FractalName = Properties->FractalName;
 	TArray<FractalFoldConfig>& FractalConfig = Properties->FractalConfig;
