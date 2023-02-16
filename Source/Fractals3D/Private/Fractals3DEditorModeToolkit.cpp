@@ -37,7 +37,7 @@ void FFractals3DEditorModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTool
 	FModeToolkit::Init(InitToolkitHost);
 #endif
 
-	SAssignNew(ToolkitWidget, SHorizontalBox)
+	SAssignNew(ViewportOverlayWidget, SHorizontalBox)
 
 		+ SHorizontalBox::Slot()
 		.HAlign(HAlign_Center)
