@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "InteractiveToolBuilder.h"
+#if ENGINE_MAJOR_VERSION == 5
 #include "BaseTools/ClickDragTool.h"
+#elif ENGINE_MAJOR_VERSION == 4
+#include "BaseEditorToolCustomization.h"
+#endif
 #include "Fractals3DInteractiveTool.generated.h"
-
 
 UCLASS()
 class FRACTALS3D_API UFractals3DInteractiveToolBuilder : public UInteractiveToolBuilder
@@ -17,7 +20,6 @@ public:
 	virtual bool CanBuildTool(const FToolBuilderState& SceneState) const override { return true; }
 	virtual UInteractiveTool* BuildTool(const FToolBuilderState& SceneState) const override;
 };
-
 
 UENUM()
 enum class FractalFoldConfig {
@@ -65,48 +67,57 @@ public:
 		FractalConfigSDF LastSDF;
 };
 
-/**
- * Property set for the UFractals3DInteractiveTool
- */
 UCLASS(Transient)
 class FRACTALS3D_API UFractals3DInteractiveToolProperties : public UInteractiveToolPropertySet
 {
 	GENERATED_BODY()
-
 public:
-	UFractals3DInteractiveToolProperties();
+UFractals3DInteractiveToolProperties();
+UPROPERTY(EditAnywhere, Category = Options)
+	FString FractalName;
+UPROPERTY(EditAnywhere, Category = Options)
+	TArray<FractalFoldConfig> FractalConfig;
+UPROPERTY(EditAnywhere, Category = Options)
+	FractalConfigSDF LastSDF;
+};
 
-	UPROPERTY(EditAnywhere, Category = Options)
+UCLASS(Blueprintable)
+class UFractals3DInteractiveTool4 : public UInteractiveTool
+{
+	GENERATED_BODY()
+public:
+	/** UInteractiveTool overrides */
+	UFUNCTION(Exec)
+		void GenerateFractal();
+
+	void TypedFractalName();
+private:
+
+	UPROPERTY(EditAnywhere, Category = Settings)
 		FString FractalName;
 
-	UPROPERTY(EditAnywhere, Category = Options)
+	UPROPERTY(EditAnywhere, Category = Settings)
 		TArray<FractalFoldConfig> FractalConfig;
-	
-	UPROPERTY(EditAnywhere, Category = Options)
+
+	UPROPERTY(EditAnywhere, Category = Settings)
 		FractalConfigSDF LastSDF;
 };
 
-
-
-/**
- * UFractals3DInteractiveTool is an example Tool that allows the user to measure the 
- * distance between two points. The first point is set by click-dragging the mouse, and
- * the second point is set by shift-click-dragging the mouse.
- */
 UCLASS()
-class FRACTALS3D_API UFractals3DInteractiveTool : public UInteractiveTool
+class FRACTALS3D_API UFractals3DInteractiveTool5 : public UInteractiveTool
+
 {
 	GENERATED_BODY()
-
 public:
-	/** UInteractiveTool overrides */
+#if ENGINE_MAJOR_VERSION == 5
 	virtual void Setup() override;
-	virtual void OnPropertyModified(UObject* PropertySet, FProperty* Property) override;
 
-	void GenerateFractal() const;
+	void GenerateFractal();
 
-protected:
-	/** Properties of the tool are stored here */
+	void TypedFractalName();
+#endif
+
+private:
 	UPROPERTY()
-	TObjectPtr<UFractals3DInteractiveToolProperties> Properties;
+		UFractals3DInteractiveToolProperties* Properties;
 };

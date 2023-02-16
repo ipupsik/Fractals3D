@@ -7,59 +7,58 @@ public class Fractals3D : ModuleRules
 	public Fractals3D(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-		
-		PublicIncludePaths.AddRange(
-			new string[] {
-				// ... add public include paths required here ...
-			}
-			);
-				
-		
-		PrivateIncludePaths.AddRange(
-			new string[] {
-				// ... add other private include paths required here ...
-			}
-			);
-			
-		
-		PublicDependencyModuleNames.AddRange(
-			new string[]
-			{
-				"Core",
-				// ... add other public dependencies that you statically link with here ...
-			}
-			);
-			
-		
-		PrivateDependencyModuleNames.AddRange(
-			new string[]
-			{
-				"CoreUObject",
-				"Engine",
+
+        PublicDependencyModuleNames.AddRange(
+        new string[]
+        {
+                    "Core",
+            // ... add other public dependencies that you statically link with here ...
+        }
+        );
+
+#if UE_5_0_OR_LATER
+        PrivateDependencyModuleNames.AddRange(
+            new string[]
+            {
+                "CoreUObject",
+                "Engine",
                 "Projects",
                 "RenderCore",
                 "ToolWidgets",
                 "Slate",
-				"Json",
+                "Json",
                 "JsonUtilities",
-				"SlateCore",
-				"InputCore",
-				"EditorFramework",
-				"EditorStyle",
-				"UnrealEd",
-				"LevelEditor",
-				"InteractiveToolsFramework",
-				"EditorInteractiveToolsFramework"
-				// ... add private dependencies that you statically link with here ...	
+                "SlateCore",
+                "InputCore",
+                "EditorFramework",
+                "EditorStyle",
+                "UnrealEd",
+                "LevelEditor",
+                "InteractiveToolsFramework",
+                "EditorInteractiveToolsFramework",
 			}
-			);
-		
-		
-		DynamicallyLoadedModuleNames.AddRange(
+            );
+
+#elif UE_4_17_OR_LATER
+        PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				// ... add any modules that your module loads dynamically here ...
-			}
+                "CoreUObject",
+                "Engine",
+                "Projects",
+                "RenderCore",
+                "Slate",
+                "Json",
+                "JsonUtilities",
+                "SlateCore",
+                "InputCore",
+                "EditorStyle",
+                "UnrealEd",
+                "LevelEditor",
+                "UnrealEd",
+                "InteractiveToolsFramework"
+            }
 			);
-	}
+#endif
+    }
 }

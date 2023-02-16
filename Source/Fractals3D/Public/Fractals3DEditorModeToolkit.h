@@ -2,6 +2,8 @@
 
 #pragma once
 
+#if ENGINE_MAJOR_VERSION == 5
+
 #include "CoreMinimal.h"
 #include "Toolkits/BaseToolkit.h"
 #include "Fractals3DEditorMode.h"
@@ -32,3 +34,5 @@ public:
 
 
 };
+
+#endif
