@@ -7,8 +7,9 @@ public class Fractals3D : ModuleRules
 	public Fractals3D(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-		
-		PublicDependencyModuleNames.AddRange(
+
+#if UE_4_17_OR_LATER
+        PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
 				"Core",
@@ -27,5 +28,6 @@ public class Fractals3D : ModuleRules
                 "UnrealEd",
             }
 			);
-	}
+#endif
+    }
 }

@@ -1,5 +1,7 @@
 // Copyright PupSik, 2023. All Rights Reserved.
 
+#if ENGINE_MAJOR_VERSION == 5
+
 #include "Fractals3DEditorMode.h"
 #include "Fractals3DEditorModeToolkit.h"
 #include "EdModeInteractiveToolsContext.h"
@@ -58,3 +60,5 @@ TMap<FName, TArray<TSharedPtr<FUICommandInfo>>> UFractals3DEditorMode::GetModeCo
 }
 
 #undef LOCTEXT_NAMESPACE
+
+#endif

@@ -12,11 +12,41 @@
 #include <string>
 #include "BaseBehaviors/ClickDragBehavior.h"
 #include "SourceControlHelpers.h"
-
 #include "SceneManagement.h"
+
+#if ENGINE_MAJOR_VERSION == 5
+#include "Fractals3DEditorModeCommands.h"
+#endif
 
 // localization namespace
 #define LOCTEXT_NAMESPACE "UFractals3DInteractiveTool"
+
+#if ENGINE_MAJOR_VERSION == 5
+UInteractiveTool* UFractals3DInteractiveToolBuilder::BuildTool(const FToolBuilderState& SceneState) const
+{
+	UFractals3DInteractiveTool* NewTool = NewObject<UFractals3DInteractiveTool>(SceneState.ToolManager);
+	return NewTool;
+}
+UFractals3DInteractiveToolProperties::UFractals3DInteractiveToolProperties()
+{
+	// initialize the points and distance to reasonable values
+	FractalName = "Default";
+	LastSDF = FractalConfigSDF::Mandelbrot;
+}
+
+void UFractals3DInteractiveTool::Setup()
+{
+	UInteractiveTool::Setup();
+	const_cast<FFractals3DEditorModeCommands&>(FFractals3DEditorModeCommands::Get()).SetFractalTool(this);
+	// Create the property set and register it with the Tool
+	Properties = NewObject<UFractals3DInteractiveToolProperties>(this, "Measurement");
+	AddToolPropertySource(Properties);
+	Properties->WatchProperty(Properties->FractalName,
+		[this](FString FractalName) {
+			TypedFractalName();
+	);
+}
+#endif
 
 void UFractals3DInteractiveTool::TypedFractalName()
 {

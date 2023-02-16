@@ -10,6 +10,7 @@
 
 void FFractals3DModule::StartupModule()
 {
+#if ENGINE_MAJOR_VERSION == 4
 	// Register the details customization
 	{
 		FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
@@ -24,11 +25,13 @@ void FFractals3DModule::StartupModule()
 
 		PropertyModule.NotifyCustomizationModuleChanged();
 	}
+#endif
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 
 	FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
 	AddShaderSourceDirectoryMapping(TEXT("/PluginShaders"), PluginShaderDir);
 
+#if ENGINE_MAJOR_VERSION == 4
 	CommandList = MakeShareable(new FUICommandList);
 
 	FLevelEditorModule& LevelEditorModule = FModuleManager::LoadModuleChecked<FLevelEditorModule>("LevelEditor");
@@ -51,7 +54,10 @@ void FFractals3DModule::StartupModule()
 		CommandList.ToSharedRef(),
 		FMenuExtensionDelegate::CreateStatic(&Local::AddMenuCommands));
 	LevelEditorModule.GetMenuExtensibilityManager()->AddExtender(MenuExtender);
+#endif
 }
+
+#if ENGINE_MAJOR_VERSION == 4
 
 void FFractals3DModule::OnToolWindowClosed(const TSharedRef<SWindow>& Window, UFractals3DInteractiveTool* Instance)
 {
@@ -97,6 +103,7 @@ void FFractals3DModule::CreateToolListMenu(class FMenuBuilder& MenuBuilder)
 		}
 	}
 }
+#endif
 
 void FFractals3DModule::ShutdownModule()
 {

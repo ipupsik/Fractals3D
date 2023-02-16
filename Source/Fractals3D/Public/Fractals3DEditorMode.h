@@ -2,6 +2,8 @@
 
 #pragma once
 
+#if ENGINE_MAJOR_VERSION == 5
+
 #include "CoreMinimal.h"
 #include "Tools/UEdMode.h"
 #include "Fractals3DEditorMode.generated.h"
@@ -25,3 +27,5 @@ public:
 	virtual void CreateToolkit() override;
 	virtual TMap<FName, TArray<TSharedPtr<FUICommandInfo>>> GetModeCommands() const override;
 };
+
+#endif

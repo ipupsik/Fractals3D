@@ -16,10 +16,12 @@ public:
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 
+#if ENGINE_MAJOR_VERSION == 4
 	static void TriggerTool(UClass* ToolClass);
 	static void CreateToolListMenu(class FMenuBuilder& MenuBuilder);
 	static void OnToolWindowClosed(const TSharedRef<SWindow>& Window, UFractals3DInteractiveTool* Instance);
 
 	TSharedPtr<FUICommandList> CommandList;
 	TSharedPtr<IPropertyChangeListener> PropertyChangeListener;
+#endif
 };

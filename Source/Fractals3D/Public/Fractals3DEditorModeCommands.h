@@ -2,6 +2,8 @@
 
 #pragma once
 
+#if ENGINE_MAJOR_VERSION == 5
+
 #include "CoreMinimal.h"
 #include "Framework/Commands/Commands.h"
 
@@ -26,3 +28,5 @@ protected:
 
 	TMap<FName, TArray<TSharedPtr<FUICommandInfo>>> Commands;
 };
+
+#endif

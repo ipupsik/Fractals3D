@@ -1,5 +1,7 @@
 // Copyright PupSik, 2023. All Rights Reserved.
 
+#if ENGINE_MAJOR_VERSION == 5
+
 #include "Fractals3DEditorModeToolkit.h"
 #include "Fractals3DEditorMode.h"
 #include "Tools/Fractals3DInteractiveTool.h"
@@ -99,3 +101,5 @@ FText FFractals3DEditorModeToolkit::GetBaseToolkitName() const
 }
 
 #undef LOCTEXT_NAMESPACE
+
+#endif
