@@ -14,7 +14,7 @@ void FFractals3DModule::StartupModule()
 	// Register the details customization
 	{
 		FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
-		PropertyModule.RegisterCustomClassLayout("Fractals3DInteractiveTool", FOnGetDetailCustomizationInstance::CreateStatic(&FBaseEditorToolCustomization::MakeInstance));
+		PropertyModule.RegisterCustomClassLayout("Fractals3DInteractiveTool4", FOnGetDetailCustomizationInstance::CreateStatic(&FBaseEditorToolCustomization::MakeInstance));
 		
 		PropertyChangeListener = PropertyModule.CreatePropertyChangeListener();
 
