@@ -2,7 +2,9 @@
 
 #include "Fractals3DEditorMode.h"
 #include "Fractals3DEditorModeToolkit.h"
+#if ENGINE_MAJOR_VERSION == 5
 #include "EdModeInteractiveToolsContext.h"
+#endif
 #include "InteractiveToolManager.h"
 #include "Fractals3DEditorModeCommands.h"
 
@@ -60,7 +62,11 @@ void UFractals3DEditorMode::CreateToolkit()
 
 TMap<FName, TArray<TSharedPtr<FUICommandInfo>>> UFractals3DEditorMode::GetModeCommands() const
 {
+#if ENGINE_MAJOR_VERSION == 5
 	return FFractals3DEditorModeCommands::Get().GetCommands();
+#else
+	return {};
+#endif
 }
 
 #undef LOCTEXT_NAMESPACE
