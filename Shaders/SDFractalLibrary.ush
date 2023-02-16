@@ -1,11 +1,4 @@
-﻿#define sr(x) sin(radians(x))
-#define c(x) cos(radians(x))
-#define rx(a) float3x3(1, 0, 0, 0, c(a), sr(a), 0, -sr(a), c(a))
-#define ry(a) float3x3(c(a), 0, -sr(a), 0, 1, 0, sr(a), 0, c(a))
-#define rz(a) float3x3(c(a), sr(a), 0, -sr(a), c(a), 0, 0, 0, 1)
-#define rxyz(a, b, c) mul(rz(c), mul(ry(b), rx(a)))
-
-struct SDFractal
+﻿struct SDFractal
 {
 	float Iterations;
 	float Bailout;
@@ -14,29 +7,32 @@ struct SDFractal
 	float Scale;
 	float OrbitType;
 	float Offset;
-
-	float Loop;
-	float Time;
-
 	float TwistXP;
 	float TwistYP;
 	float TwistZP;
 	float Helix;
-	float BlackHole;
-
-	float3 CameraVector;
-	float3 Orbit;
-	float3 OrbitOrigin;
+	float Spiral;
 	float3 FoldAngles;
 	float3 FoldOffset;
 	float3 FoldSize;
+	// Fractal configuration
+
+	float Loop;
+	float Time;
+	// Animation
+
+	float3 CameraVector;
+
+	float3 Orbit;
+	float3 OrbitOrigin;
+	// Orbit Coloring
 
 	void initialize(float _Iterations, float _Bailout, float _Power, 
 	float _FoldingScale,
 	float3 _CameraVector, float _Scale, float3 _Orbit, float _OrbitType,
 	float3 _OrbitOrigin, float3 _FoldAngles, float3 _FoldOffset,
 	float3 _FoldSize, float _Offset, float _Time, float _Loop, float _TwistXP, float _TwistYP, float _TwistZP,
-	float _Helix, float _BlackHole)
+	float _Helix, float _Spiral)
 	{
 		Iterations = _Iterations;
 		Bailout = _Bailout;
@@ -45,17 +41,13 @@ struct SDFractal
 		Scale = _Scale;
 		OrbitType = _OrbitType;
 		seed = 1.0f;
-
 		Loop = _Loop;
 		Time = _Time;
-
 		TwistXP = _TwistXP;
 		TwistYP = _TwistYP;
 		TwistZP = _TwistZP;
-
 		Helix = _Helix;
-		BlackHole = _BlackHole;
-
+		Spiral = _Spiral;
 		CameraVector = _CameraVector;
 		Orbit = _Orbit;
 		OrbitOrigin = _OrbitOrigin;
@@ -72,7 +64,7 @@ struct SDFractal
 		else if (OrbitType == 2.0f) orbit = orbitMax(orbit, p.xyz, Orbit , OrbitOrigin);
 		else if (OrbitType == 3.0f) orbit = orbitMaxAbs(orbit, p.xyz, Orbit , OrbitOrigin);
 		else if (OrbitType == 4.0f) orbit = orbitSum(orbit, p.xyz, Orbit , OrbitOrigin);
-		else if (OrbitType == 5.0f) orbit = orbitSumAbs(orbit, p.xyz, Orbit , OrbitOrigin);
+		else orbit = orbitSumAbs(orbit, p.xyz, Orbit , OrbitOrigin);
 
 		return orbit;
 	}
@@ -85,6 +77,36 @@ struct SDFractal
 		float h = clamp(0.5 + 0.5*(b-a)/k, 0.0, 1.0 );
 		return lerp(b, a, h) - k*h*(1.0 - h);
 		//return -log(exp(-a/k) + exp(-b/k))*k;
+	}
+
+	// sinus of radians
+	float sinus_degree(float x)
+	{
+		return  sin(radians(x));
+	}
+	float cosinus_degree(float x)
+	{
+		return  cos(radians(x));
+	}
+	// rotate matrix X
+	float3x3 rotate_x(float x)
+	{
+		return float3x3(1, 0, 0, 0, cosinus_degree(x), sinus_degree(x), 0, -sinus_degree(x), cosinus_degree(x));
+	}
+	// rotate matrix Y
+	float3x3 rotate_y(float x)
+	{
+		return float3x3(cosinus_degree(x), 0, -sinus_degree(x), 0, 1, 0, sinus_degree(x), 0, cosinus_degree(x));
+	}
+	// rotate matrix Z
+	float3x3 rotate_z(float x)
+	{
+		return float3x3(cosinus_degree(x), sinus_degree(x), 0, -sinus_degree(x), cosinus_degree(x), 0, 0, 0, 1);
+	}
+	// combined rotate matrix XYZ
+	float3x3 rotate_xyz(float x, float y, float z)
+	{
+		return mul(rotate_z(z), mul(rotate_y(y), rotate_x(x)));
 	}
 
 	//##########################################
@@ -134,7 +156,7 @@ struct SDFractal
 		return obt + abs((p.xyz - ogn) * s);
 	}
 	//##########################################
-	//   Space folding functions
+	//   Pupsik space folding functions
 
 	float4 planeFold( float4 z, float3 n, float d) {
 		z.xyz -= 2.0 * min(0.0, dot(z.xyz, n) - d) * n;
@@ -224,7 +246,7 @@ struct SDFractal
 	}
 
 	//##########################################
-	//   Primative distance estimators
+	//   Pupsik primitive distance estimators
 
 	float sdCone(float4 p, float2 c, float h )
 	{
@@ -293,6 +315,7 @@ struct SDFractal
 	//##########################################
 	//   Quaternions operations
 
+	// quaternion^2
 	float4 qSqr(float4 a )
 	{
 	    return float4( a.x*a.x - a.y*a.y - a.z*a.z - a.w*a.w,
@@ -300,11 +323,14 @@ struct SDFractal
 	                 2.0*a.x*a.z,
 	                 2.0*a.x*a.w );
 	}
+
+	// quaternion^3
 	float4 qCube( float4 a )
 	{
 		return a * ( 4.0*a.x*a.x - dot(a,a)*float4(3.0,1.0,1.0,1.0) );
 	}
 
+	// quaternion multiplication
 	float4 qmul(float4 a, float4 b)
 	{
 	    return float4(
@@ -327,23 +353,21 @@ struct SDFractal
 	//##########################################
 
 	int   seed;
-	int   PupSik_Rand() { seed = seed*0x343fd+0x269ec3; return (seed>>16)&32767; }
-	float PupSik_Frand() { return float(PupSik_Rand())/32767.0; }
 
 	float2 sdMondelbrot(float3 p, out float3 outputColor) {
 		float3 z = p;
-		float3 c = z;
+		float3 twist_point = z;
 		float dr = 1.0;
 		float r = 0.0;
 
 		float i = 0;
 		float t0 = 1.0;
 
-		c = mul(rxyz(TwistYP, TwistZP, TwistXP), c);
+		twist_point = mul(rotate_xyz(TwistYP, TwistZP, TwistXP), twist_point);
 
-		float zsin, zcos;
-		sincos(Helix  * clamp(c.z, -10, 10) + BlackHole * clamp(length(c.xy) , -10, 10), zsin, zcos);
-		c.xy = float2(zcos * c.x + zsin * c.y, -zsin * c.x + zcos * c.y);
+		float twist_sin, twist_cos;
+		sincos(Helix  * twist_point.z + Spiral * length(twist_point.xy), twist_sin, twist_cos);
+		twist_point.xy = float2(twist_cos * twist_point.x + twist_sin * twist_point.y, -twist_sin * twist_point.x + twist_cos * twist_point.y);
 
 		for (i = 0; i < Iterations ; i+=1.0f) {
 			r = length(z);
@@ -370,7 +394,7 @@ struct SDFractal
 			
 			// convert back to cartesian coordinates
 			z = zr * float3( cos(theta)*cos(phi), cos(theta)*sin(phi), sin(theta) );
-			z += c;
+			z += twist_point;
 
 			t0 = min(t0, zr);
 		}
@@ -389,17 +413,14 @@ struct SDFractal
 
 	    float4 trap = float4(abs(z.xyz),dot(z,z));
 	    for( int i=0; i < Iterations; i++ )
-	    {
-	        // dz -> 2·z·dz, meaning |dz| -> 2·|z|·|dz|
-	        // Now we take the 2.0 out of the loop and do it at the end with an exp2
+	    
 	        md2 *= 4.0 * mz2;
-	        // z  -> z^2 + c
-	        //z = qSqr(z) + Offset;  
 	        z = qSqr(z) + float4(FoldOffset, FoldOffset.x);  
 
 	        trap = min(trap, float4(abs(z.xyz),dot(z,z)) );
 
 	        mz2 = qlength2(z);
+
 	        if(mz2 > Bailout) break;
 			n += 1.0f;
 	    }
@@ -430,15 +451,11 @@ struct SDFractal
 
 	    for( int i=0; i<Iterations; i++ ) 
 		{
-	        // z' = 3z² -> |z'|² = 9|z²|²
 			dz2 *= 9.0*lengthSquared(qSqr(z));
-	        
-	        // z = z³ + c		
 			z = qCube( z ) + float4(FoldOffset, -6.0 / 22.0);
 	        
-	        // stop under divergence		
-	        m2 = lengthSquared(z);
-	        // exit condition
+			m2 = lengthSquared(z);
+
 	        if( m2>Bailout ) break;				 
 			n += 1.0;
 		}
@@ -451,7 +468,7 @@ struct SDFractal
 		return float2(d, n);        
 	}
 
-	float3x3 euler_yzx_to_axis_angle(float3 rot)
+	float3x3 pupsik_euler_yzx_to_axis_angle(float3 rot)
 	{
 		float x = rot.x;
 		float y = rot.y;
@@ -463,19 +480,19 @@ struct SDFractal
 		return float3x3(r3, r2, r1);
 	}
 
-	float opSmoothUnion( float d1, float d2, float k ) 
+	float pupsik_opSmoothUnion( float d1, float d2, float k ) 
 	{
 		float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
 		return lerp( d2, d1, h ) - k*h*(1.0-h);
 	}
 	
-	float opSmoothSubtraction( float d1, float d2, float k ) 
+	float pupsik_opSmoothSubtraction( float d1, float d2, float k ) 
 	{
 		float h = clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
 		return lerp( d2, -d1, h ) + k*h*(1.0-h); 
 	}
 	
-	float opSmoothIntersection( float d1, float d2, float k )
+	float pupsik_opSmoothIntersection( float d1, float d2, float k )
 	{
 		float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
 		return lerp( d2, d1, h ) + k*h*(1.0-h); 
