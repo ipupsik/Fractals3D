@@ -49,11 +49,6 @@ void UFractals3DInteractiveTool5::Setup()
 			TypedFractalName();
 		});
 }
-#elif ENGINE_MAJOR_VERSION == 4
-void UFractals3DInteractiveTool5::Setup()
-{
-	
-}
 #endif
 
 #if ENGINE_MAJOR_VERSION == 5
@@ -63,16 +58,6 @@ void UFractals3DInteractiveTool4::TypedFractalName()
 }
 
 void UFractals3DInteractiveTool4::GenerateFractal()
-{
-
-}
-#elif ENGINE_MAJOR_VERSION == 4
-void UFractals3DInteractiveTool5::TypedFractalName()
-{
-
-}
-
-void UFractals3DInteractiveTool5::GenerateFractal()
 {
 
 }

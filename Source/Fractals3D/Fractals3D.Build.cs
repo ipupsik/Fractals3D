@@ -40,7 +40,7 @@ public class Fractals3D : ModuleRules
             );
 
 #elif UE_4_17_OR_LATER
-        PublicDependencyModuleNames.AddRange(
+        PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
                 "CoreUObject",
@@ -56,6 +56,7 @@ public class Fractals3D : ModuleRules
                 "UnrealEd",
                 "LevelEditor",
                 "UnrealEd",
+                "InteractiveToolsFramework"
             }
 			);
 #endif

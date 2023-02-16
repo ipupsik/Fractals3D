@@ -18,11 +18,6 @@ void FFractals3DModule::StartupModule()
 		
 		PropertyChangeListener = PropertyModule.CreatePropertyChangeListener();
 
-		PropertyChangeListener->GetOnPropertyChangedDelegate().AddLambda([]()
-			{
-				&UFractals3DInteractiveTool::TypedFractalName();
-			});
-
 		PropertyModule.NotifyCustomizationModuleChanged();
 	}
 #endif
@@ -59,14 +54,14 @@ void FFractals3DModule::StartupModule()
 
 #if ENGINE_MAJOR_VERSION == 4
 
-void FFractals3DModule::OnToolWindowClosed(const TSharedRef<SWindow>& Window, UFractals3DInteractiveTool* Instance)
+void FFractals3DModule::OnToolWindowClosed(const TSharedRef<SWindow>& Window, UFractals3DInteractiveTool4* Instance)
 {
 	Instance->RemoveFromRoot();
 }
 
 void FFractals3DModule::TriggerTool(UClass* ToolClass)
 {
-	UFractals3DInteractiveTool* ToolInstance = NewObject<UFractals3DInteractiveTool>(GetTransientPackage(), ToolClass);
+	UFractals3DInteractiveTool4* ToolInstance = NewObject<UFractals3DInteractiveTool4>(GetTransientPackage(), ToolClass);
 	ToolInstance->AddToRoot();
 
 	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
@@ -85,7 +80,7 @@ void FFractals3DModule::CreateToolListMenu(class FMenuBuilder& MenuBuilder)
 		UClass* Class = *ClassIt;
 		if (!Class->HasAnyClassFlags(CLASS_Deprecated | CLASS_NewerVersionExists | CLASS_Abstract))
 		{
-			if (Class->IsChildOf(UFractals3DInteractiveTool::StaticClass()))
+			if (Class->IsChildOf(UFractals3DInteractiveTool4::StaticClass()))
 			{
 				FString FriendlyName = Class->GetName();
 				FText MenuDescription = FText::Format(LOCTEXT("ToolMenuiDescription", "{0}"), FText::FromString(FriendlyName));

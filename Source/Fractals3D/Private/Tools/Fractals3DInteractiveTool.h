@@ -2,9 +2,9 @@
 
 #pragma once
 
-#if ENGINE_MAJOR_VERSION == 5
 #include "CoreMinimal.h"
 #include "InteractiveToolBuilder.h"
+#if ENGINE_MAJOR_VERSION == 5
 #include "BaseTools/ClickDragTool.h"
 #elif ENGINE_MAJOR_VERSION == 4
 #include "BaseEditorToolCustomization.h"
