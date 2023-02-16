@@ -12,6 +12,9 @@
 #include "Fractals3DInteractiveTool.generated.h"
 
 #if ENGINE_MAJOR_VERSION == 5
+
+#if WITH_EDITORONLY_DATA
+
 UCLASS()
 class FRACTALS3D_API UFractals3DInteractiveToolBuilder : public UInteractiveToolBuilder
 {
@@ -20,6 +23,9 @@ public:
 	virtual bool CanBuildTool(const FToolBuilderState& SceneState) const override { return true; }
 	virtual UInteractiveTool* BuildTool(const FToolBuilderState& SceneState) const override;
 };
+
+#endif
+
 #endif
 
 UENUM()
@@ -68,7 +74,10 @@ public:
 		FractalConfigSDF LastSDF;
 };
 
-#if ENGINE_MAJOR_VERSION == 5
+#if ENGINE_MAJOR_VERSION
+
+#if WITH_EDITORONLY_DATA
+
 UCLASS(Transient)
 class FRACTALS3D_API UFractals3DInteractiveToolProperties : public UInteractiveToolPropertySet
 {
@@ -84,33 +93,44 @@ public:
 };
 #endif
 
+#endif
+
 #if ENGINE_MAJOR_VERSION == 5
 /**
  * UFractals3DInteractiveTool is an example Tool that allows the user to measure the
  * distance between two points. The first point is set by click-dragging the mouse, and
  * the second point is set by shift-click-dragging the mouse.
  */
+#if WITH_EDITORONLY_DATA
 UCLASS()
 class FRACTALS3D_API UFractals3DInteractiveTool : public UInteractiveTool
+#endif
 #elif ENGINE_MAJOR_VERSION == 4
+#if WITH_EDITORONLY_DATA
 UCLASS(Blueprintable)
 class UFractals3DInteractiveTool : public UObject
 #endif
+#endif
+
 {
 	GENERATED_BODY()
-
 public:
 #if ENGINE_MAJOR_VERSION == 5
 	virtual void Setup() override;
-	virtual void OnPropertyModified(UObject* PropertySet, FProperty* Property) override;
 #endif
 
 private:
 #if ENGINE_MAJOR_VERSION == 5
+
+#if WITH_EDITORONLY_DATA
 	/** Properties of the tool are stored here */
 	UPROPERTY()
 		TObjectPtr<UFractals3DInteractiveToolProperties> Properties;
+#endif
+
 #elif ENGINE_MAJOR_VERSION == 4
+
+#if WITH_EDITORONLY_DATA
 	UPROPERTY(EditAnywhere, Category = Settings)
 		FString FractalName;
 
@@ -120,6 +140,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Settings)
 		FractalConfigSDF LastSDF;
 #endif
+
+#endif
+
 	/** UInteractiveTool overrides */
 
 	UFUNCTION(Exec)

@@ -44,12 +44,18 @@ void UFractals3DInteractiveTool::Setup()
 	Properties->WatchProperty(Properties->FractalName,
 		[this](FString FractalName) {
 			TypedFractalName();
-	);
+		});
 }
 #endif
 
 void UFractals3DInteractiveTool::TypedFractalName()
 {
+#if ENGINE_MAJOR_VERSION == 5
+	FString& FractalName = Properties->FractalName;
+	TArray<FractalFoldConfig>& FractalConfig = Properties->FractalConfig;
+	FractalConfigSDF& LastSDF = Properties->LastSDF;
+#endif
+
 	FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
 			
 	FString ShaderName = FractalName;
@@ -140,6 +146,12 @@ bool IsOrbit(FractalFoldConfig Type)
 }
 
 void UFractals3DInteractiveTool::GenerateFractal() {
+#if ENGINE_MAJOR_VERSION == 5
+	FString& FractalName = Properties->FractalName;
+	TArray<FractalFoldConfig>& FractalConfig = Properties->FractalConfig;
+	FractalConfigSDF& LastSDF = Properties->LastSDF;
+#endif
+
 	FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
 
 	FString MainShaderFilename = FractalName;
