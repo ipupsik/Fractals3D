@@ -9,7 +9,6 @@
 #include "Misc/FileHelper.h"
 #include <iostream>
 #include <fstream>
-#include <filesystem>
 #include <string>
 #include "BaseBehaviors/ClickDragBehavior.h"
 #include "SourceControlHelpers.h"
@@ -19,44 +18,29 @@
 // localization namespace
 #define LOCTEXT_NAMESPACE "UFractals3DInteractiveTool"
 
-/*
-void UFractals3DInteractiveTool::Setup()
+void UFractals3DInteractiveTool::TypedFractalName()
 {
-	UInteractiveTool::Setup();
-
-	const_cast<FFractals3DEditorModeCommands&>(FFractals3DEditorModeCommands::Get()).SetFractalTool(this);
-
-	// Create the property set and register it with the Tool
-	Properties = NewObject<UFractals3DInteractiveToolProperties>(this, "Measurement");
-	AddToolPropertySource(Properties);
-
-	Properties->WatchProperty(Properties->FractalName,
-		[this](FString FractalName) {
-			FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
+	FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
 			
-			FString ShaderName = Properties->FractalName;
-			ShaderName += ".ush";
-			FString JsonName = Properties->FractalName;
-			JsonName += "_Conf.json";
+	FString ShaderName = FractalName;
+	ShaderName += ".ush";
+	FString JsonName = FractalName;
+	JsonName += "_Conf.json";
 
-			FString Shader = FPaths::Combine(PluginShaderDir, ShaderName);
-			FString Json = FPaths::Combine(PluginShaderDir, JsonName);
+	FString Shader = FPaths::Combine(PluginShaderDir, ShaderName);
+	FString Json = FPaths::Combine(PluginShaderDir, JsonName);
 
-			if (std::filesystem::exists(std::filesystem::path(TCHAR_TO_ANSI(*Shader)))) {
-				FString FileData = "";
-				FJsonFractalProperties FractalJSON;
-				FFileHelper::LoadFileToString(FileData, *Json);
-
-				if (FJsonObjectConverter::JsonObjectStringToUStruct(FileData, &FractalJSON, 0, 0))
-				{
-					Properties->FractalConfig = FractalJSON.FractalConfig;
-					Properties->LastSDF = FractalJSON.LastSDF;
-				}
-			}
+	FString FileData = "";
+	FJsonFractalProperties FractalJSON;
+	if (FFileHelper::LoadFileToString(FileData, *Json))
+	{
+		if (FJsonObjectConverter::JsonObjectStringToUStruct(FileData, &FractalJSON, 0, 0))
+		{
+			FractalConfig = FractalJSON.FractalConfig;
+			LastSDF = FractalJSON.LastSDF;
 		}
-	);
+	}
 }
-*/
 
 FString FunctionNameByFoldType(FractalFoldConfig Type)
 {
@@ -133,9 +117,6 @@ void UFractals3DInteractiveTool::GenerateFractal() {
 
 	FString SdfShaderFilename = FractalName;
 	SdfShaderFilename += "SDF.ush";
-
-	//std::filesystem::remove(std::filesystem::path(TCHAR_TO_ANSI(*FPaths::Combine(PluginShaderDir, MainShaderFilename))));
-	//std::filesystem::remove(std::filesystem::path(TCHAR_TO_ANSI(*FPaths::Combine(PluginShaderDir, SdfShaderFilename))));
 
 	// Fill MainShader
 	FString MainShader = "#include \"/PluginShaders/SDFractalLibrary.ush\"\n"

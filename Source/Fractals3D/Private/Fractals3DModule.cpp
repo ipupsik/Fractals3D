@@ -2,6 +2,7 @@
 
 #include "Fractals3DModule.h"
 #include "Interfaces/IPluginManager.h"
+#include "IPropertyChangeListener.h"
 #include "LevelEditor.h"
 #include "BaseEditorToolCustomization.h"
 
@@ -13,7 +14,14 @@ void FFractals3DModule::StartupModule()
 	{
 		FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
 		PropertyModule.RegisterCustomClassLayout("Fractals3DInteractiveTool", FOnGetDetailCustomizationInstance::CreateStatic(&FBaseEditorToolCustomization::MakeInstance));
-	
+		
+		PropertyChangeListener = PropertyModule.CreatePropertyChangeListener();
+
+		PropertyChangeListener->GetOnPropertyChangedDelegate().AddLambda([]()
+			{
+				&UFractals3DInteractiveTool::TypedFractalName();
+			});
+
 		PropertyModule.NotifyCustomizationModuleChanged();
 	}
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module

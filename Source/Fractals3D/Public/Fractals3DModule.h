@@ -6,6 +6,8 @@
 #include "Tools/Fractals3DInteractiveTool.h"
 #include "Modules/ModuleInterface.h"
 
+class IPropertyChangeListener;
+
 class FFractals3DModule : public IModuleInterface
 {
 public:
@@ -19,4 +21,5 @@ public:
 	static void OnToolWindowClosed(const TSharedRef<SWindow>& Window, UFractals3DInteractiveTool* Instance);
 
 	TSharedPtr<FUICommandList> CommandList;
+	TSharedPtr<IPropertyChangeListener> PropertyChangeListener;
 };

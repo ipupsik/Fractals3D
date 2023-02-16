@@ -2,6 +2,7 @@
 
 #pragma once
 
+#if ENGINE_MAJOR_VERSION == 4
 #include "BaseEditorToolCustomization.h"
 #include "Fractals3DInteractiveTool.generated.h"
 
@@ -74,4 +75,6 @@ public:
 
 	UFUNCTION(Exec)
 	void GenerateFractal();
+
+	void TypedFractalName();
 };
