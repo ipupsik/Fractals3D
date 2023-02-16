@@ -109,7 +109,9 @@ void FFractals3DModule::CreateToolListMenu(class FMenuBuilder& MenuBuilder)
 
 void FFractals3DModule::ShutdownModule()
 {
-	
+#if ENGINE_MAJOR_VERSION == 5
+	FFractals3DEditorModeCommands::Unregister();
+#endif
 }
 
 #undef LOCTEXT_NAMESPACE
