@@ -2,12 +2,10 @@
 
 #pragma once
 
-#if ENGINE_MAJOR_VERSION == 5
-
 #include "CoreMinimal.h"
 #include "Framework/Commands/Commands.h"
 
-class UFractals3DInteractiveTool5;
+class UFractals3DInteractiveTool;
 
 class FFractals3DEditorModeCommands : public TCommands<FFractals3DEditorModeCommands>
 {
@@ -19,14 +17,12 @@ public:
 
 	TSharedPtr<FUICommandInfo> InteractiveTool;
 
-	void SetFractalTool(UFractals3DInteractiveTool5* Tool);
+	void SetFractalTool(UFractals3DInteractiveTool* Tool);
 
 	void UseFractalTool() const;
 
 protected:
-	UFractals3DInteractiveTool5* FractalTool;
+	UFractals3DInteractiveTool* FractalTool;
 
 	TMap<FName, TArray<TSharedPtr<FUICommandInfo>>> Commands;
 };
-
-#endif

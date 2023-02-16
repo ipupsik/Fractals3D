@@ -2,8 +2,6 @@
 
 #pragma once
 
-#if ENGINE_MAJOR_VERSION == 5
-
 #include "CoreMinimal.h"
 #include "Toolkits/BaseToolkit.h"
 #include "Fractals3DEditorMode.h"
@@ -14,7 +12,11 @@ public:
 	FFractals3DEditorModeToolkit();
 
 	/** FModeToolkit interface */
+	#if ENGINE_MAJOR_VERSION == 5
 	virtual void Init(const TSharedPtr<IToolkitHost>& InitToolkitHost, TWeakObjectPtr<UEdMode> InOwningMode) override;
+	#elif ENGINE_MAJOR_VERSION == 4
+	virtual void Init(const TSharedPtr<IToolkitHost>& InitToolkitHost) override;
+	#endif
 	virtual void GetToolPaletteNames(TArray<FName>& PaletteNames) const override;
 
 	// FModeToolkit
@@ -34,5 +36,3 @@ public:
 
 
 };
-
-#endif

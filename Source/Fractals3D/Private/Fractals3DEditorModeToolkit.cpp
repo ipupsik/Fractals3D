@@ -1,16 +1,18 @@
 // Copyright PupSik, 2023. All Rights Reserved.
 
-#if ENGINE_MAJOR_VERSION == 5
-
 #include "Fractals3DEditorModeToolkit.h"
 #include "Fractals3DEditorMode.h"
 #include "Tools/Fractals3DInteractiveTool.h"
 #include "Fractals3DEditorModeCommands.h"
+#if ENGINE_MAJOR_VERSION == 5
 #include "EdModeInteractiveToolsContext.h"
+#endif
 #include "Engine/Selection.h"
 #include "Widgets/Layout/SScrollBox.h"
 #include "Fractals3DEditorModeCommands.h"
+#if ENGINE_MAJOR_VERSION == 5
 #include "SPrimaryButton.h"
+#endif
 
 #include "Modules/ModuleManager.h"
 #include "PropertyEditorModule.h"
@@ -23,12 +25,19 @@ FFractals3DEditorModeToolkit::FFractals3DEditorModeToolkit()
 {
 }
 
+#if ENGINE_MAJOR_VERSION == 5
 void FFractals3DEditorModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost, TWeakObjectPtr<UEdMode> InOwningMode)
+#elif ENGINE_MAJOR_VERSION == 4
+void FFractals3DEditorModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
+#endif
 {
+#if ENGINE_MAJOR_VERSION == 5
 	FModeToolkit::Init(InitToolkitHost, InOwningMode);
+#elif ENGINE_MAJOR_VERSION == 4
+	FModeToolkit::Init(InitToolkitHost);
+#endif
 
-
-	SAssignNew(ViewportOverlayWidget, SHorizontalBox)
+	SAssignNew(ToolkitWidget, SHorizontalBox)
 
 		+ SHorizontalBox::Slot()
 		.HAlign(HAlign_Center)
@@ -36,8 +45,12 @@ void FFractals3DEditorModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTool
 		.Padding(FMargin(0.0f, 0.0f, 0.f, 15.f))
 		[
 			SNew(SBorder)
+		#if ENGINE_MAJOR_VERSION == 5
 			.BorderImage(FAppStyle::Get().GetBrush("EditorViewport.OverlayBrush"))
-		.Padding(8.f)
+		#elif ENGINE_MAJOR_VERSION == 4
+			.BorderImage(FEditorStyle::Get().GetBrush("EditorViewport.OverlayBrush"))
+		#endif
+			.Padding(8.f)
 		[
 			SNew(SHorizontalBox)
 
@@ -45,7 +58,11 @@ void FFractals3DEditorModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitTool
 		.AutoWidth()
 		.Padding(FMargin(0.0, 0.f, 2.f, 0.f))
 		[
+		#if ENGINE_MAJOR_VERSION == 5
 			SNew(SPrimaryButton)
+		#elif ENGINE_MAJOR_VERSION == 4
+			SNew(SButton)
+		#endif
 			.Text(LOCTEXT("OverlayGenerate", "Generate"))
 		.ToolTipText(LOCTEXT("OverlayGenerateTooltip", "Generate 3d fractal by specified params"))
 		.OnClicked(this, &FFractals3DEditorModeToolkit::OnFractalGenerateClicked)
@@ -59,7 +76,9 @@ void FFractals3DEditorModeToolkit::OnToolStarted(UInteractiveToolManager* Manage
 	FModeToolkit::OnToolStarted(Manager, Tool);
 
 	// Add the accept/cancel overlay only if the tool is not the default tool.
+#if ENGINE_MAJOR_VERSION == 5
 	GetToolkitHost()->AddViewportOverlayWidget(ViewportOverlayWidget.ToSharedRef());
+#endif
 }
 
 void FFractals3DEditorModeToolkit::OnToolEnded(UInteractiveToolManager* Manager, UInteractiveTool* Tool)
@@ -68,7 +87,9 @@ void FFractals3DEditorModeToolkit::OnToolEnded(UInteractiveToolManager* Manager,
 
 	if (IsHosted())
 	{
+	#if ENGINE_MAJOR_VERSION == 5
 		GetToolkitHost()->RemoveViewportOverlayWidget(ViewportOverlayWidget.ToSharedRef());
+	#endif
 	}
 }
 
@@ -101,5 +122,3 @@ FText FFractals3DEditorModeToolkit::GetBaseToolkitName() const
 }
 
 #undef LOCTEXT_NAMESPACE
-
-#endif

@@ -13,10 +13,7 @@
 #include "BaseBehaviors/ClickDragBehavior.h"
 #include "SourceControlHelpers.h"
 #include "SceneManagement.h"
-
-#if ENGINE_MAJOR_VERSION == 5
 #include "Fractals3DEditorModeCommands.h"
-#endif
 
 // localization namespace
 #define LOCTEXT_NAMESPACE "UFractals3DInteractiveTool"
@@ -24,11 +21,7 @@
 
 UInteractiveTool* UFractals3DInteractiveToolBuilder::BuildTool(const FToolBuilderState& SceneState) const
 {
-#if ENGINE_MAJOR_VERSION == 5
-	UFractals3DInteractiveTool5* NewTool = NewObject<UFractals3DInteractiveTool5>(SceneState.ToolManager);
-#elif ENGINE_MAJOR_VERSION == 4
-	UFractals3DInteractiveTool4* NewTool = NewObject<UFractals3DInteractiveTool4>(SceneState.ToolManager);
-#endif
+	UFractals3DInteractiveTool* NewTool = NewObject<UFractals3DInteractiveTool>(SceneState.ToolManager);
 	return NewTool;
 }
 
@@ -39,8 +32,7 @@ UFractals3DInteractiveToolProperties::UFractals3DInteractiveToolProperties()
 	LastSDF = FractalConfigSDF::Mandelbrot;
 }
 
-#if ENGINE_MAJOR_VERSION == 5
-void UFractals3DInteractiveTool5::Setup()
+void UFractals3DInteractiveTool::Setup()
 {
 	UInteractiveTool::Setup();
 	const_cast<FFractals3DEditorModeCommands&>(FFractals3DEditorModeCommands::Get()).SetFractalTool(this);
@@ -52,31 +44,12 @@ void UFractals3DInteractiveTool5::Setup()
 			TypedFractalName();
 		});
 }
-#endif
 
-#if ENGINE_MAJOR_VERSION == 5
-void UFractals3DInteractiveTool4::TypedFractalName()
+void UFractals3DInteractiveTool::TypedFractalName()
 {
-	
-}
-
-void UFractals3DInteractiveTool4::GenerateFractal()
-{
-
-}
-#endif
-
-#if ENGINE_MAJOR_VERSION == 5
-void UFractals3DInteractiveTool5::TypedFractalName()
-#elif ENGINE_MAJOR_VERSION == 4
-void UFractals3DInteractiveTool4::TypedFractalName()
-#endif
-{
-#if ENGINE_MAJOR_VERSION == 5
 	FString& FractalName = Properties->FractalName;
 	TArray<FractalFoldConfig>& FractalConfig = Properties->FractalConfig;
 	FractalConfigSDF& LastSDF = Properties->LastSDF;
-#endif
 
 	FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
 			
@@ -167,17 +140,11 @@ bool IsOrbit(FractalFoldConfig Type)
 	return Type == FractalFoldConfig::OrbitColoring;
 }
 
-#if ENGINE_MAJOR_VERSION == 5
-void UFractals3DInteractiveTool5::GenerateFractal() 
-#elif ENGINE_MAJOR_VERSION == 4
-void UFractals3DInteractiveTool4::GenerateFractal()
-#endif
+void UFractals3DInteractiveTool::GenerateFractal() 
 {
-#if ENGINE_MAJOR_VERSION == 5
 	FString& FractalName = Properties->FractalName;
 	TArray<FractalFoldConfig>& FractalConfig = Properties->FractalConfig;
 	FractalConfigSDF& LastSDF = Properties->LastSDF;
-#endif
 
 	FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
 

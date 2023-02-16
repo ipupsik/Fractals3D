@@ -6,8 +6,6 @@
 #include "InteractiveToolBuilder.h"
 #if ENGINE_MAJOR_VERSION == 5
 #include "BaseTools/ClickDragTool.h"
-#elif ENGINE_MAJOR_VERSION == 4
-#include "BaseEditorToolCustomization.h"
 #endif
 #include "Fractals3DInteractiveTool.generated.h"
 
@@ -81,41 +79,17 @@ UPROPERTY(EditAnywhere, Category = Options)
 	FractalConfigSDF LastSDF;
 };
 
-UCLASS(Blueprintable)
-class UFractals3DInteractiveTool4 : public UInteractiveTool
-{
-	GENERATED_BODY()
-public:
-	/** UInteractiveTool overrides */
-	UFUNCTION(Exec)
-		void GenerateFractal();
-
-	void TypedFractalName();
-private:
-
-	UPROPERTY(EditAnywhere, Category = Settings)
-		FString FractalName;
-
-	UPROPERTY(EditAnywhere, Category = Settings)
-		TArray<FractalFoldConfig> FractalConfig;
-
-	UPROPERTY(EditAnywhere, Category = Settings)
-		FractalConfigSDF LastSDF;
-};
-
 UCLASS()
-class FRACTALS3D_API UFractals3DInteractiveTool5 : public UInteractiveTool
+class FRACTALS3D_API UFractals3DInteractiveTool : public UInteractiveTool
 
 {
 	GENERATED_BODY()
 public:
-#if ENGINE_MAJOR_VERSION == 5
 	virtual void Setup() override;
 
 	void GenerateFractal();
 
 	void TypedFractalName();
-#endif
 
 private:
 	UPROPERTY()
