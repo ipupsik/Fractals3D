@@ -27,6 +27,10 @@ void FFractals3DModule::StartupModule()
 	AddShaderSourceDirectoryMapping(TEXT("/PluginShaders"), PluginShaderDir);
 
 #if ENGINE_MAJOR_VERSION == 4
+	FFractals3DEditorModeCommands::Register();
+#endif
+
+#if ENGINE_MAJOR_VERSION == 4
 	CommandList = MakeShareable(new FUICommandList);
 
 	FLevelEditorModule& LevelEditorModule = FModuleManager::LoadModuleChecked<FLevelEditorModule>("LevelEditor");
