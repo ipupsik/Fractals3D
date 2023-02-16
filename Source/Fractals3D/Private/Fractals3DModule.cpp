@@ -2,6 +2,9 @@
 
 #include "Fractals3DModule.h"
 #include "Interfaces/IPluginManager.h"
+#if ENGINE_MAJOR_VERSION == 5
+#include "Fractals3DEditorModeCommands.h"
+#endif
 #include "IPropertyChangeListener.h"
 #include "LevelEditor.h"
 #include "BaseEditorToolCustomization.h"
@@ -26,7 +29,7 @@ void FFractals3DModule::StartupModule()
 	FString PluginShaderDir = FPaths::Combine(IPluginManager::Get().FindPlugin(TEXT("Fractals3D"))->GetBaseDir(), TEXT("Shaders"));
 	AddShaderSourceDirectoryMapping(TEXT("/PluginShaders"), PluginShaderDir);
 
-#if ENGINE_MAJOR_VERSION == 4
+#if ENGINE_MAJOR_VERSION == 5
 	FFractals3DEditorModeCommands::Register();
 #endif
 
