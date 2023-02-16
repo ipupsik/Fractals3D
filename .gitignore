@@ -41,6 +41,9 @@
 *.VC.db
 *.VC.opendb
 
+Content/*
+Content/Fractals3D/*
+
 # Precompiled Assets
 SourceArt/**/*.png
 SourceArt/**/*.tga
