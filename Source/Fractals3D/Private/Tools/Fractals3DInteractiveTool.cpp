@@ -43,7 +43,7 @@ void UFractals3DInteractiveTool5::Setup()
 	const_cast<FFractals3DEditorModeCommands&>(FFractals3DEditorModeCommands::Get()).SetFractalTool(this);
 	// Create the property set and register it with the Tool
 	Properties = NewObject<UFractals3DInteractiveToolProperties>(this, "Measurement");
-	AddToolPropertySource(Properties.Get());
+	AddToolPropertySource(Properties);
 	Properties->WatchProperty(Properties->FractalName,
 		[this](FString FractalName) {
 			TypedFractalName();

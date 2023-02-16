@@ -119,5 +119,5 @@ public:
 
 private:
 	UPROPERTY()
-		TWeakObjectPtr<UFractals3DInteractiveToolProperties> Properties;
+		UFractals3DInteractiveToolProperties* Properties;
 };
