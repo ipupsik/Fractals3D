@@ -1,0 +1,12 @@
+{
+	"fractalConfig": [
+		"ScaleTranslateFold",
+		"PlaneFold",
+		"ScaleTranslateFold",
+		"AbsFold",
+		"OrbitColoring",
+		"RotXFold",
+		"RotYFold"
+	],
+	"lastSDF": "Torus"
+}

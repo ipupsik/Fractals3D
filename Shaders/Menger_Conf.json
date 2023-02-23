@@ -1,0 +1,10 @@
+{
+	"fractalConfig": [
+		"AbsFold",
+		"MengerFold",
+		"ScaleTranslateFold",
+		"PlaneFold",
+		"OrbitColoring"
+	],
+	"lastSDF": "Box"
+}

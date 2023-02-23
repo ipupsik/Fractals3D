@@ -1,0 +1,7 @@
+{
+	"fractalConfig": [
+		"SierpinskiFold",
+		"MengerFold"
+	],
+	"lastSDF": "Mandelbrot"
+}
